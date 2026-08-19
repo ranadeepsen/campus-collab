@@ -3,15 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 5050 --turbo",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 5050",
     "lint": "eslint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.7.6",
+    "@hookform/resolvers": "^5.9.1",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "dotenv": "^17.4.2",
+    "dotenv-expand": "^1000.0.0",
+    "framer-motion": "^13.1.0",
+    "jose": "^6.2.9",
+    "lucide-react": "^1.31.0",
+    "mongoose": "^9.9.2",
     "next": "16.3.1",
+    "next-cloudinary": "^6.18.8",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-hook-form": "^7.85.0",
+    "svix": "^1.99.1",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
