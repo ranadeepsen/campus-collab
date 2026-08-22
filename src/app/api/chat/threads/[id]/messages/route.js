@@ -69,6 +69,16 @@ export async function POST(req, { params }) {
     
     await thread.updateOne({ updatedAt: new Date() });
 
+    // Check if this thread belongs to an AmbassadorConnection
+    if (user.user_type === 'prospective') {
+      const { default: AmbassadorConnection } = await import('@/server/models/AmbassadorConnection');
+      const connection = await AmbassadorConnection.findOne({ threadId: thread._id });
+      if (connection && !connection.firstProspectMessageAt) {
+        connection.firstProspectMessageAt = new Date();
+        await connection.save();
+      }
+    }
+
     await message.populate('sender', 'profile.name profile.photo clerkId');
     return NextResponse.json(message);
   } catch (error) {

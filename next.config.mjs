@@ -1,3 +1,5 @@
+import { withSentryConfig } from "@sentry/nextjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -14,8 +16,24 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
     ],
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: true,
+  org: "campus-collab", // These will be picked up by sentry wizard later if needed
+  project: "campus-collab-web",
+});

@@ -94,7 +94,7 @@ export default function CollegesClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FC] p-4 sm:p-8">
+    <>
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -233,6 +233,6 @@ export default function CollegesClient() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

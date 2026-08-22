@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useClerk, useUser } from '@clerk/nextjs';
-import { Home, Landmark, Calendar, Users, GraduationCap, MessageSquare, Bookmark, Headphones, Settings, LogOut, Loader2, AlertCircle } from 'lucide-react';
+import { Home, Landmark, Calendar, Users, UserPlus, GraduationCap, MessageSquare, Bookmark, Headphones, Settings, LogOut, Loader2, AlertCircle, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Sidebar() {
@@ -20,12 +20,21 @@ export default function Sidebar() {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    fetch('/api/users/me/profile')
-      .then(res => res.json())
-      .then(data => {
-        if (!data.error) setProfile(data);
-      })
-      .catch(console.error);
+    const fetchProfile = () => {
+      fetch('/api/users/me/profile')
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) setProfile(data);
+        })
+        .catch(console.error);
+    };
+
+    fetchProfile();
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('user-stats-updated', fetchProfile);
+      return () => window.removeEventListener('user-stats-updated', fetchProfile);
+    }
   }, []);
 
   const handleLogout = async () => {
@@ -51,6 +60,7 @@ export default function Sidebar() {
   const allNavItems = [
     { icon: Home, label: 'Feed', href: '/' },
     { icon: Landmark, label: 'Campus Hub', href: '/hub' },
+    { icon: UserPlus, label: 'Connections', href: '/connections' },
     { icon: Calendar, label: 'Events', href: '/events' },
     { icon: Users, label: 'Clubs & Societies', href: '/clubs' },
     { icon: GraduationCap, label: 'Mentorship', href: '/mentors' },
@@ -69,9 +79,9 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="flex flex-col gap-4 select-none">
+    <div className="flex flex-col gap-3 select-none h-[calc(100vh-3rem)]">
       {/* Sidebar Logo Header */}
-      <div className="px-2 py-1 mb-1">
+      <div className="px-2 py-1 mb-0.5">
         <Link href="/" className="flex items-center gap-2.5 group">
           <img 
             src="/photos/full-logo.png" 
@@ -90,7 +100,7 @@ export default function Sidebar() {
             <Link 
               key={item.label} 
               href={item.href}
-              className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all font-semibold text-sm ${
+              className={`flex items-center justify-between px-4 py-2.5 rounded-xl transition-all font-semibold text-sm ${
                 isActive 
                   ? 'bg-[#5D22D7] text-white shadow-[0_4px_14px_rgba(93,34,215,0.25)]' 
                   : 'text-gray-700 hover:text-[#5D22D7] hover:bg-[#F0EBFD]/50'
@@ -113,12 +123,13 @@ export default function Sidebar() {
       </nav>
 
       {/* Profile Card */}
-      <div className="bg-gradient-to-br from-[#5D22D7] via-[#6320EE] to-[#7B2CBF] rounded-2xl p-4 text-white shadow-md mt-2">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/40 shrink-0 shadow-sm bg-purple-800">
+      <Link href="/settings/profile" className="bg-gradient-to-br from-[#5D22D7] via-[#6320EE] to-[#7B2CBF] rounded-2xl p-4 text-white shadow-md mt-1 block hover:shadow-lg transition-all group">
+        <div className="flex items-center justify-between mb-3.5">
+          <div className="flex items-center gap-3">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/40 shrink-0 shadow-sm bg-purple-800">
             {isLoaded ? (
               <img 
-                src={user?.imageUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80"} 
+                src={profile?.profile?.photo || user?.imageUrl || "/default-avatar.png"} 
                 alt={user?.fullName || "User"} 
                 className="w-full h-full object-cover" 
               />
@@ -127,67 +138,75 @@ export default function Sidebar() {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-sm leading-tight truncate text-white">
-              {profile?.profile?.name || user?.fullName || 'Loading...'}
-            </h3>
-            <p className="text-xs text-purple-200 truncate mt-0.5 font-medium">
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-bold text-sm leading-tight truncate text-white">
+                {profile?.profile?.name || user?.fullName || 'Loading...'}
+              </h3>
+              {profile?.ambassadorStatus === 'active' && (
+                <span className="bg-white text-[#5D22D7] text-[8px] font-black uppercase px-1.5 py-0.5 rounded shrink-0">
+                  Ambassador
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-purple-200 mt-0.5 font-medium leading-snug line-clamp-1">
               {profile?.profile?.college?.name || 'No College'}
             </p>
-            <p className="text-[11px] text-purple-200/80 truncate mt-0.5">
+            <p className="text-[10px] text-purple-200/80 truncate mt-0.5">
               {profile?.profile?.yearOfStudy ? `${profile.profile.yearOfStudy}, ` : ''}
               {profile?.profile?.department || ''}
             </p>
           </div>
+          </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 pt-3 border-t border-white/20 text-center gap-1">
+        <div className={`grid pt-3 border-t border-white/20 text-center gap-1 ${profile?.ambassadorStatus === 'active' ? 'grid-cols-3' : 'grid-cols-2'}`}>
           <div>
             <div className="text-[11px] font-medium text-purple-200 mb-0.5">Posts</div>
-            <div className="font-extrabold text-sm text-white">0</div>
+            <div className="font-extrabold text-sm text-white">{profile?.stats?.posts || 0}</div>
           </div>
           <div>
-            <div className="text-[11px] font-medium text-purple-200 mb-0.5">Connections</div>
-            <div className="font-extrabold text-sm text-white">0</div>
+            <div className="text-[11px] font-medium text-purple-200 mb-0.5">Connects</div>
+            <div className="font-extrabold text-sm text-white">{profile?.stats?.connections || 0}</div>
           </div>
-          <div>
-            <div className="text-[11px] font-medium text-purple-200 mb-0.5">Points</div>
-            <div className="font-extrabold text-sm text-white">0</div>
-          </div>
+          {profile?.ambassadorStatus === 'active' ? (
+            <div>
+              <div className="text-[11px] font-medium text-purple-200 mb-0.5">Points</div>
+              <div className="font-extrabold text-sm text-white">{profile?.stats?.points || 0}</div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <button 
+                type="button"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push('/ambassador/apply'); }}
+                className="text-[9px] font-bold bg-white/20 px-2 py-1 rounded text-white hover:bg-white/30 transition-colors"
+              >
+                Be Ambassador
+              </button>
+            </div>
+          )}
         </div>
-      </div>
+      </Link>
 
       {/* Quick Links Card */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
-        <h4 className="font-bold text-xs text-gray-900 mb-3 px-1">Quick Links</h4>
+      <div className="bg-white border border-gray-100 rounded-2xl p-3.5 shadow-sm mt-auto">
+        <h4 className="font-bold text-xs text-gray-900 mb-2.5 px-1">Quick Links</h4>
         <div className="grid grid-cols-3 gap-2">
           {quickLinks.map((link) => {
-            if (link.isLogout) {
-              return (
-                <button 
-                  key={link.label} 
-                  type="button"
-                  onClick={() => {
-                    setLogoutError(null);
-                    setShowConfirmModal(true);
-                  }}
-                  className="group flex flex-col items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition-all text-center cursor-pointer border-none bg-transparent"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-[#F0EBFD] flex items-center justify-center text-[#5D22D7] group-hover:scale-105 transition-transform shadow-xs">
-                    <link.icon className="w-4 h-4" />
-                  </div>
-                  <span className="text-[10px] font-medium text-gray-600 group-hover:text-[#5D22D7] leading-tight text-center">
-                    {link.label}
-                  </span>
-                </button>
-              );
-            }
+            const ButtonOrLink = link.isLogout ? 'button' : Link;
+            const props = link.isLogout ? {
+              type: 'button',
+              onClick: () => {
+                setLogoutError(null);
+                setShowConfirmModal(true);
+              }
+            } : { href: link.href };
 
             return (
-              <Link 
+              <ButtonOrLink 
                 key={link.label} 
-                href={link.href} 
-                className="group flex flex-col items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition-all text-center"
+                {...props}
+                className="group flex flex-col items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition-all text-center cursor-pointer border-none bg-transparent"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#F0EBFD] flex items-center justify-center text-[#5D22D7] group-hover:scale-105 transition-transform shadow-xs">
                   <link.icon className="w-4 h-4" />
@@ -195,7 +214,7 @@ export default function Sidebar() {
                 <span className="text-[10px] font-medium text-gray-600 group-hover:text-[#5D22D7] leading-tight text-center">
                   {link.label}
                 </span>
-              </Link>
+              </ButtonOrLink>
             );
           })}
         </div>

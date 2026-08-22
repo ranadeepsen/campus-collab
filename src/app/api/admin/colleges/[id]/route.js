@@ -21,3 +21,21 @@ export async function PUT(req, { params }) {
     return NextResponse.json({ error: "Internal Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req, { params }) {
+  try {
+    const adminSession = await verifyAdminSession();
+    if (!adminSession || !adminSession.isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { id } = await params;
+    
+    await connectDB();
+    const deleted = await College.findByIdAndDelete(id);
+    
+    if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
+  }
+}

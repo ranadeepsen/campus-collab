@@ -73,56 +73,13 @@ export function AdminDashboard({ adminRole }) {
     }
   };
 
-  const NavItem = ({ href, icon: Icon, label }) => (
-    <Link href={href} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-[#5D22D7]/10 hover:text-[#5D22D7] rounded-xl font-medium transition-colors">
-      <Icon className="w-5 h-5" />
-      {label}
-    </Link>
-  );
 
   const filteredQueue = queue.filter(q => 
     activeTab === 'id_card' ? q.user?.verification_method === 'college_id_card' : q.user?.verification_method === 'college_email'
   );
 
   return (
-    <div className="min-h-screen bg-[#F8F9FC] flex flex-col md:flex-row">
-      {/* Sidebar */}
-      <div className="w-full md:w-64 bg-white border-r border-gray-200 p-4 flex flex-col">
-        <div className="flex items-center gap-2 mb-8 px-4 py-2">
-          <ShieldAlert className="w-6 h-6 text-[#5D22D7]" />
-          <span className="font-bold text-xl text-gray-900">Admin Panel</span>
-        </div>
-        
-        <nav className="flex-1 space-y-1">
-          <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Overview</div>
-          <NavItem href="/admin" icon={BarChart3} label="Dashboard" />
-          <NavItem href="/admin/queue" icon={Check} label="Verification Queue" />
-          
-          <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Management</div>
-          <NavItem href="/admin/users" icon={Users} label="Users" />
-          <NavItem href="/admin/colleges" icon={Building2} label="Colleges" />
-          <NavItem href="/admin/reports" icon={Flag} label="Reports" />
-          <NavItem href="/admin/points" icon={Award} label="Points Ledger" />
-          
-          {adminRole === 'super-admin' && (
-            <>
-              <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">System</div>
-              <NavItem href="/admin/settings" icon={Settings} label="Admins" />
-            </>
-          )}
-        </nav>
-
-        <button 
-          onClick={() => signOut({ redirectUrl: '/' })}
-          className="flex items-center gap-2 px-4 py-3 mt-auto text-red-600 hover:bg-red-50 rounded-xl font-bold transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          Log Out
-        </button>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-4 sm:p-8 overflow-y-auto">
+    <>
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h1 className="text-2xl font-bold text-gray-900 mb-1">Verification Queue</h1>
@@ -206,7 +163,6 @@ export function AdminDashboard({ adminRole }) {
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </>
   );
 }

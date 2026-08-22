@@ -5,7 +5,7 @@ import College from '@/server/models/College';
 export async function GET() {
   try {
     await connectDB();
-    const colleges = await College.find({ is_active: true }).sort({ name: 1 }).select('name _id').lean();
+    const colleges = await College.find({ is_active: true }).sort({ name: 1 }).select('name _id departments').lean();
     return NextResponse.json(colleges);
   } catch (error) {
     console.error("[PUBLIC_COLLEGES_GET_ERROR]", error);

@@ -20,22 +20,31 @@ export async function POST(req, { params }) {
 
     const client = await clerkClient();
 
+    const safeClerkCall = async (fn) => {
+      try {
+        await fn();
+      } catch (e) {
+        console.warn("Clerk API warning:", e.message);
+      }
+    };
+
+
     switch (action) {
       case 'suspend':
         user.status = 'suspended';
-        await client.users.banUser(user.clerkId); // Prevent login
+        await safeClerkCall(() => client.users.banUser(user.clerkId)); // Prevent login
         break;
       case 'unsuspend':
         user.status = 'verified'; // Assuming they were verified before. Could be improved.
-        await client.users.unbanUser(user.clerkId);
+        await safeClerkCall(() => client.users.unbanUser(user.clerkId));
         break;
       case 'ban':
         user.isBanned = true;
-        await client.users.banUser(user.clerkId);
+        await safeClerkCall(() => client.users.banUser(user.clerkId));
         break;
       case 'unban':
         user.isBanned = false;
-        await client.users.unbanUser(user.clerkId);
+        await safeClerkCall(() => client.users.unbanUser(user.clerkId));
         break;
       case 'force_verify':
         user.status = 'verified';
@@ -63,19 +72,19 @@ export async function POST(req, { params }) {
 
     // Always sync Clerk metadata when the user can still sign in
     if (!user.isBanned && user.status !== 'suspended') {
-      await client.users.updateUserMetadata(user.clerkId, {
+      await safeClerkCall(() => client.users.updateUserMetadata(user.clerkId, {
         publicMetadata: {
           user_type: user.user_type,
           status: user.status,
           profileCompleted: user.profileCompleted,
           isAmbassador: user.isAmbassador
         }
-      });
+      }));
     }
 
     return NextResponse.json({ success: true, user });
   } catch (error) {
     console.error("[ADMIN_USER_ACTION_ERROR]", error);
-    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Internal Error" }, { status: 500 });
   }
 }

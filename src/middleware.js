@@ -58,9 +58,23 @@ function getOnboardingRedirect(metadata) {
 }
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isPublicRoute(req)) return;
+  // Fully bypass Clerk for the custom admin authentication
+  if (req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/api/admin')) {
+    return;
+  }
 
   const { sessionClaims, userId } = await auth();
+
+  // FIX: If user is logged in and visits exactly /sign-in or /sign-up, redirect them server-side.
+  // This prevents the client-side Clerk component from rendering and creating a browser history trap!
+  if (userId && (req.nextUrl.pathname === '/sign-in' || req.nextUrl.pathname === '/sign-up')) {
+    const metadata = sessionClaims?.publicMetadata || {};
+    const onboardingRedirect = getOnboardingRedirect(metadata);
+    return NextResponse.redirect(new URL(onboardingRedirect || '/', req.url));
+  }
+
+  if (isPublicRoute(req)) return;
+
   if (!userId) {
     const signInUrl = new URL('/sign-in', req.url);
     signInUrl.searchParams.set('redirect_url', req.nextUrl.pathname);
@@ -70,8 +84,6 @@ export default clerkMiddleware(async (auth, req) => {
   const metadata = sessionClaims?.publicMetadata || {};
 
   if (isOnboardingRoute(req)) return;
-
-  if (req.nextUrl.pathname.startsWith('/admin')) return;
 
   if (isMainAppRoute(req)) {
     const onboardingRedirect = getOnboardingRedirect(metadata);

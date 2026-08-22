@@ -18,7 +18,7 @@ export async function POST(req, { params }) {
     const post = await Post.findById(postId);
     if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
 
-    const hasSaved = user.savedPosts.includes(post._id);
+    const hasSaved = user.savedPosts.some(id => id.toString() === post._id.toString());
     
     if (hasSaved) {
       user.savedPosts = user.savedPosts.filter(id => id.toString() !== post._id.toString());

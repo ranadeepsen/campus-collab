@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <AuthShell>
       <div className="flex w-full justify-center lg:justify-start">
-        <SignIn />
+        <SignIn routing="hash" />
       </div>
     </AuthShell>
   );

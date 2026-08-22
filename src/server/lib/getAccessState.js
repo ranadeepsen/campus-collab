@@ -2,6 +2,8 @@ export function getAccessState(user) {
   const defaultState = {
     canPost: false,
     canJoinClubs: false,
+    canCreateClubs: false,
+    canCreateEvents: false,
     canRSVP: false,
     canDMStudents: false,
     canBecomeAmbassador: false,
@@ -18,6 +20,8 @@ export function getAccessState(user) {
     return {
       canPost: true,
       canJoinClubs: true,
+      canCreateClubs: true,
+      canCreateEvents: true,
       canRSVP: true,
       canDMStudents: true,
       canBecomeAmbassador: true,
@@ -43,6 +47,8 @@ export function getAccessState(user) {
     return {
       canPost: true,
       canJoinClubs: true,
+      canCreateClubs: true,
+      canCreateEvents: true,
       canRSVP: true,
       canDMStudents: true,
       canBecomeAmbassador: true,

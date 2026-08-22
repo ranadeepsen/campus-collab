@@ -174,7 +174,7 @@ export default function VerifyEmail() {
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Verification Code'}
               </button>
               <p className="text-xs text-gray-500 text-center mt-3">
-                Instant access. We'll send a 6-digit code to this address.
+                Instant access. We&apos;ll send a 6-digit code to this address.
               </p>
             </form>
           ) : (
@@ -212,7 +212,7 @@ export default function VerifyEmail() {
         <div className="space-y-4 text-center">
           <div className="bg-amber-50 rounded-xl p-4 mb-4">
             <p className="text-sm text-amber-800 font-medium text-left">
-              Don't have a college email yet? Upload a clear photo of your Student ID card or admission letter. This method requires manual review by an admin.
+              Don&apos;t have a college email yet? Upload a clear photo of your Student ID card or admission letter. This method requires manual review by an admin.
             </p>
           </div>
           

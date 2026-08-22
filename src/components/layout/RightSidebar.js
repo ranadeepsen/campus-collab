@@ -1,44 +1,70 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { Settings, Camera, Music2 } from 'lucide-react';
+import { Settings, Camera, Music2, Users } from 'lucide-react';
+import { format } from 'date-fns';
+import ClubCard from '@/components/shared/ClubCard';
 
 export default function RightSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useUser();
   const userType = user?.publicMetadata?.user_type;
   const canJoinClubs = userType === 'current' && user?.publicMetadata?.status === 'verified';
-  const events = [
-    { month: 'MAY', day: '24', title: 'TechNova 2K25', university: 'IIT Delhi', time: '24 May, 10:00 AM' },
-    { month: 'MAY', day: '31', title: 'Cultural Night', university: 'Jadavpur University', time: '31 May, 06:00 PM' },
-    { month: 'JUN', day: '07', title: 'Code Clash', university: 'NIT Surathkal', time: '7 June, 11:00 AM' },
-  ];
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [realClubs, setRealClubs] = useState([]);
+  const [loadingClubs, setLoadingClubs] = useState(true);
+  
+  useEffect(() => {
+    fetch('/api/events?limit=3', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setUpcomingEvents(data);
+      })
+      .catch(console.error);
 
-  const clubs = [
-    { 
-      name: 'Robotics Club', 
-      university: 'IIT Bombay', 
-      members: '1.2k Members', 
-      icon: Settings,
-      iconBg: 'bg-slate-900 text-blue-400' 
-    },
-    { 
-      name: 'Photography Club', 
-      university: 'Delhi University', 
-      members: '982 Members', 
-      icon: Camera,
-      iconBg: 'bg-zinc-900 text-white' 
-    },
-    { 
-      name: 'Music Society', 
-      university: 'Jadavpur University', 
-      members: '1.1k Members', 
-      icon: Music2,
-      iconBg: 'bg-slate-900 text-pink-400' 
-    },
-  ];
+    fetch('/api/clubs?limit=10', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setRealClubs(data);
+        setLoadingClubs(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoadingClubs(false);
+      });
+  }, []);
+
+
+  if (pathname === '/clubs') {
+    return (
+      <div className="flex flex-col gap-5 select-none h-[calc(100vh-6rem)]">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden h-full flex flex-col">
+          <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between shrink-0">
+            <h2 className="font-bold text-base text-gray-900">Top 10 Clubs</h2>
+            <span className="text-[10px] font-semibold bg-[#F0EBFD] text-[#5D22D7] px-2 py-0.5 rounded-full">Ranked</span>
+          </div>
+          
+          <div className="divide-y divide-gray-100 overflow-y-auto flex-1 custom-scrollbar">
+            {loadingClubs ? (
+              <div className="p-8 text-center text-sm text-gray-500">Loading rankings...</div>
+            ) : realClubs.length === 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                <p className="font-medium text-sm">No clubs found.</p>
+              </div>
+            ) : (
+              realClubs.slice(0, 10).map((club, index) => (
+                <ClubCard key={club._id} club={club} index={index} isSidebar />
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5 select-none">
@@ -53,32 +79,31 @@ export default function RightSidebar() {
         </div>
         
         <div className="space-y-3.5">
-          {events.map((evt, i) => (
-            <div key={i} className="flex items-center justify-between gap-3 group">
-              <div className="flex items-center gap-3 min-w-0">
+          {upcomingEvents.length === 0 ? (
+            <div className="text-xs text-gray-500 py-4 text-center border border-dashed border-gray-200 rounded-xl">No upcoming events</div>
+          ) : upcomingEvents.map((evt) => {
+            const dateObj = new Date(evt.dateTime);
+            return (
+              <Link 
+                key={evt._id}
+                href={`/events?eventId=${evt._id}`}
+                className="flex items-center gap-3 group p-2 -mx-2 rounded-xl hover:bg-gray-50 transition-colors"
+              >
                 {/* Date Box */}
-                <div className="w-12 h-13 rounded-xl bg-[#F0EBFD] border border-purple-100 flex flex-col items-center justify-center shrink-0">
-                  <span className="text-[9px] font-extrabold text-[#5D22D7] uppercase tracking-wider">{evt.month}</span>
-                  <span className="text-base font-extrabold text-[#5D22D7] leading-none">{evt.day}</span>
+                <div className="w-12 h-13 rounded-xl bg-[#F0EBFD] border border-purple-100 flex flex-col items-center justify-center shrink-0 group-hover:bg-[#5D22D7] group-hover:border-[#5D22D7] transition-colors">
+                  <span className="text-[9px] font-extrabold text-[#5D22D7] group-hover:text-white uppercase tracking-wider transition-colors">{format(dateObj, 'MMM')}</span>
+                  <span className="text-base font-extrabold text-[#5D22D7] group-hover:text-white leading-none transition-colors">{format(dateObj, 'dd')}</span>
                 </div>
                 
                 {/* Event Details */}
-                <div className="min-w-0">
-                  <h4 className="font-bold text-xs text-gray-900 truncate group-hover:text-[#5D22D7] transition-colors">{evt.title}</h4>
-                  <p className="text-[11px] text-gray-500 truncate mt-0.5">{evt.university}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{evt.time}</p>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-xs text-gray-900 truncate group-hover:text-[#5D22D7] transition-colors">{evt.name}</h4>
+                  <p className="text-[11px] text-gray-500 truncate mt-0.5">{evt.college?.name || 'TBA'}</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">{format(dateObj, 'd MMM, h:mm a')}</p>
                 </div>
-              </div>
-
-              <button 
-                type="button"
-                onClick={() => router.push('/events')}
-                className="text-xs font-semibold text-gray-700 hover:text-[#5D22D7] border border-gray-200 hover:border-[#5D22D7] px-3 py-1.5 rounded-xl transition-colors shrink-0 cursor-pointer"
-              >
-                View Events
-              </button>
-            </div>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
 
@@ -90,32 +115,42 @@ export default function RightSidebar() {
             View All
           </Link>
         </div>
-        
-        <div className="space-y-3.5">
-          {clubs.map((club, i) => (
-            <div key={i} className="flex items-center justify-between gap-3 group">
-              <div className="flex items-center gap-3 min-w-0">
-                {/* Club Icon */}
-                <div className={`w-10 h-10 rounded-full ${club.iconBg} flex items-center justify-center shrink-0 shadow-2xs`}>
-                  <club.icon className="w-5 h-5" />
-                </div>
-                
-                {/* Club Details */}
-                <div className="min-w-0">
-                  <h4 className="font-bold text-xs text-gray-900 truncate group-hover:text-[#5D22D7] transition-colors">{club.name}</h4>
-                  <p className="text-[11px] text-gray-500 truncate mt-0.5">{club.university}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">{club.members}</p>
-                </div>
-              </div>
+        <div className="space-y-3.5 mt-2">
+          {loadingClubs ? (
+            <p className="text-xs text-gray-500">Loading clubs...</p>
+          ) : realClubs.length === 0 ? (
+            <p className="text-xs text-gray-500">No clubs yet.</p>
+          ) : (
+            realClubs.slice(0, 3).map((club, i) => {
+              const membersCount = club.members ? club.members.filter(m => m.status === 'active' || m.role === 'admin').length : 0;
+              return (
+                <div key={club._id} className="flex items-center justify-between gap-3 group">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm border border-gray-100 bg-gray-50 overflow-hidden">
+                      {club.logoUrl ? (
+                        <img src={club.logoUrl} alt={club.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <Users className="w-5 h-5 text-gray-400" />
+                      )}
+                    </div>
+                    
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-xs text-gray-900 truncate group-hover:text-[#5D22D7] transition-colors">{club.name}</h4>
+                      <p className="text-[11px] text-gray-500 truncate mt-0.5">{club.college?.name || club.university || 'University'}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">{membersCount} Members</p>
+                    </div>
+                  </div>
 
-              <Link
-                href={canJoinClubs ? '/clubs' : '/clubs'}
-                className={`text-xs font-semibold border px-4 py-1.5 rounded-xl transition-colors shrink-0 ${canJoinClubs ? 'text-gray-700 hover:text-[#5D22D7] border-gray-200 hover:border-[#5D22D7]' : 'text-gray-400 border-gray-100 pointer-events-none'}`}
-              >
-                {canJoinClubs ? 'Browse' : 'Locked'}
-              </Link>
-            </div>
-          ))}
+                  <Link
+                    href={`/clubs/${club._id}`}
+                    className="text-[10px] font-bold bg-gray-50 hover:bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg transition-colors shrink-0 border border-gray-200"
+                  >
+                    View
+                  </Link>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import Sidebar from './Sidebar';
-import RightSidebar from './RightSidebar';
+import MainLayoutWrapper from './MainLayoutWrapper';
 import MobileNav from './MobileNav';
 import TopBar from './TopBar';
 
@@ -20,20 +20,9 @@ export default function AppShell({ children }) {
           {/* Top Header */}
           <TopBar />
           
-          {/* Main Grid: Feed + Right Sidebar */}
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_330px] gap-6 items-start pb-16 md:pb-8">
-            {/* Center Feed */}
-            <main className="min-w-0">
-              {children}
-            </main>
-
-            {/* Right Sidebar */}
-            <aside className="hidden xl:block w-[330px] shrink-0">
-              <div className="sticky top-6">
-                <RightSidebar />
-              </div>
-            </aside>
-          </div>
+          <MainLayoutWrapper>
+            {children}
+          </MainLayoutWrapper>
         </div>
       </div>
       

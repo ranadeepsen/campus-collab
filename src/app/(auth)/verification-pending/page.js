@@ -48,7 +48,7 @@ export default function VerificationPending() {
           )}
         </div>
         <p className="text-gray-600 mb-6">
-          Your account is currently under review by our moderation team. You'll be notified once your verification is approved!
+          Your account is currently under review by our moderation team. You&apos;ll be notified once your verification is approved!
         </p>
 
         <div className="space-y-3 mb-6">

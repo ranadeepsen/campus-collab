@@ -10,12 +10,17 @@ const UserSchema = new mongoose.Schema({
   review_reason: { type: String, default: null },
   profileCompleted: { type: Boolean, default: false },
   isAmbassador: { type: Boolean, default: false },
+  ambassadorStatus: { type: String, enum: ['none', 'active'], default: 'none' },
+  ambassadorPoints: { type: Number, default: 0 },
+  responseFlags: { type: Number, default: 0 },
+  ambassadorHidden: { type: Boolean, default: false },
   isBanned: { type: Boolean, default: false },
   
   profile: {
     name: { type: String, default: '' },
     photo: { type: String, default: '' },
     college: { type: mongoose.Schema.Types.ObjectId, ref: 'College', default: null },
+    course: { type: String, default: '' },
     department: { type: String, default: '' },
     yearOfStudy: { type: String, default: '' },
     bio: { type: String, default: '' },

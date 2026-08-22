@@ -4,6 +4,9 @@ import connectDB from '@/server/lib/db';
 import User from '@/server/models/User';
 import { getAccessState } from '@/server/lib/getAccessState';
 
+import Post from '@/server/models/Post';
+import Connection from '@/server/models/Connection';
+
 export async function GET() {
   try {
     const { userId } = await auth();
@@ -14,8 +17,19 @@ export async function GET() {
     
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+    const postsCount = await Post.countDocuments({ author: user._id });
+    const connectionsCount = await Connection.countDocuments({
+      $or: [{ requester: user._id }, { recipient: user._id }],
+      status: 'accepted'
+    });
+
     return NextResponse.json({
       ...user,
+      stats: {
+        posts: postsCount,
+        connections: connectionsCount,
+        points: user.ambassadorPoints || 0
+      },
       access: getAccessState(user)
     });
   } catch (error) {
@@ -29,7 +43,7 @@ export async function PUT(req) {
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const { name, photo, department, yearOfStudy, bio, interests } = body;
+    const { name, photo, college, course, department, yearOfStudy, bio, interests } = body;
 
     await connectDB();
     let user = await User.findOne({ clerkId: userId });
@@ -48,6 +62,8 @@ export async function PUT(req) {
     user.profile.photo = photo || user.profile.photo;
 
     if (user.user_type === 'current') {
+      if (college) user.profile.college = college;
+      user.profile.course = course || user.profile.course;
       user.profile.department = department || user.profile.department;
       user.profile.yearOfStudy = yearOfStudy || user.profile.yearOfStudy;
       user.profile.bio = bio || user.profile.bio;

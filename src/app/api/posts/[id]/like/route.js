@@ -22,7 +22,7 @@ export async function POST(req, { params }) {
     const post = await Post.findById(postId);
     if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
 
-    const hasLiked = post.likes.includes(user._id);
+    const hasLiked = post.likes.some(id => id.toString() === user._id.toString());
     
     if (hasLiked) {
       post.likes = post.likes.filter(id => id.toString() !== user._id.toString());
