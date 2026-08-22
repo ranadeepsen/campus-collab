@@ -61,16 +61,13 @@ export async function PUT(req) {
     user.profile.name = name || user.profile.name;
     user.profile.photo = photo || user.profile.photo;
 
-    if (user.user_type === 'current') {
-      if (college) user.profile.college = college;
-      user.profile.course = course || user.profile.course;
-      user.profile.department = department || user.profile.department;
-      user.profile.yearOfStudy = yearOfStudy || user.profile.yearOfStudy;
-      user.profile.bio = bio || user.profile.bio;
-      user.profile.interests = interests || user.profile.interests;
-    } else if (user.user_type === 'prospective') {
-      user.profile.bio = bio || user.profile.bio;
-    }
+    // Save fields if they are provided, regardless of strict user_type (e.g. admins might have null user_type)
+    if (college !== undefined) user.profile.college = college;
+    if (course !== undefined) user.profile.course = course;
+    if (department !== undefined) user.profile.department = department;
+    if (yearOfStudy !== undefined) user.profile.yearOfStudy = yearOfStudy;
+    if (bio !== undefined) user.profile.bio = bio;
+    if (interests !== undefined) user.profile.interests = interests;
 
     user.profileCompleted = true;
     await user.save();

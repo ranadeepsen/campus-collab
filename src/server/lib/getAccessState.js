@@ -16,6 +16,7 @@ export function getAccessState(user) {
   if (!user) return defaultState;
 
   // Super Admin Override
+  // True Super Admin
   if (user.email === 'ranadeepsen2004@gmail.com') {
     return {
       canPost: true,
@@ -25,10 +26,27 @@ export function getAccessState(user) {
       canRSVP: true,
       canDMStudents: true,
       canBecomeAmbassador: true,
-      canConnectWithAmbassador: true, // Prospective feature
-      canAcceptConnection: true,      // Ambassador feature
+      canConnectWithAmbassador: true,
+      canAcceptConnection: true,
       canUseCampusHub: true,
-      canVerifyID: true,              // Admin feature
+      canVerifyID: true, // Only this email can verify IDs
+      feedMode: 'full'
+    };
+  }
+
+  // Auto-Verified Tester Accounts (Bypasses ID Card Check, but CANNOT access Admin Panel)
+  if (user.email === 'senaldo1307@gmail.com' || user.email === 'sayanblp@gmail.com' || user.email === 'deysantoshkumar70@gmail.com') {
+    return {
+      canPost: true,
+      canJoinClubs: true,
+      canCreateClubs: true,
+      canCreateEvents: true,
+      canRSVP: true,
+      canDMStudents: true,
+      canBecomeAmbassador: true,
+      canConnectWithAmbassador: false,
+      canAcceptConnection: user.isAmbassador || false,
+      canUseCampusHub: true,
       feedMode: 'full'
     };
   }

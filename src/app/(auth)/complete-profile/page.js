@@ -77,8 +77,8 @@ export default function CompleteProfile() {
             required
             value={formData.name}
             onChange={(e) => setFormData({...formData, name: e.target.value})}
-            className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary"
-            placeholder="John Doe"
+            className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
+            placeholder="Enter your name"
           />
         </div>
 
@@ -88,7 +88,7 @@ export default function CompleteProfile() {
             <textarea
               value={formData.bio}
               onChange={(e) => setFormData({...formData, bio: e.target.value})}
-              className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary resize-none"
+              className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900 resize-none"
               rows={3}
               placeholder="What colleges or programs are you exploring?"
             />
@@ -105,8 +105,10 @@ export default function CompleteProfile() {
                 <select
                   required
                   value={formData.college}
-                  onChange={(e) => setFormData({...formData, college: e.target.value})}
-                  className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white"
+                  onChange={(e) => {
+                    setFormData({...formData, college: e.target.value, department: ''});
+                  }}
+                  className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
                 >
                   <option value="">Select your college...</option>
                   {colleges.map(c => (
@@ -122,7 +124,7 @@ export default function CompleteProfile() {
                 required
                 value={formData.course}
                 onChange={(e) => setFormData({...formData, course: e.target.value})}
-                className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white"
+                className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
               >
                 <option value="">Select your course...</option>
                 <option value="B.Tech">B.Tech (Bachelor of Technology)</option>
@@ -139,14 +141,38 @@ export default function CompleteProfile() {
 
             <div>
               <label className="block text-sm font-medium text-text-main mb-1">Department / Branch</label>
-              <input 
-                type="text"
-                required
-                value={formData.department}
-                onChange={(e) => setFormData({...formData, department: e.target.value})}
-                className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary"
-                placeholder="e.g. Computer Science"
-              />
+              {(() => {
+                const selectedCollegeObj = colleges.find(c => c._id === formData.college);
+                const availableDepartments = selectedCollegeObj?.departments || [];
+                
+                if (availableDepartments.length > 0) {
+                  return (
+                    <select
+                      required
+                      value={formData.department}
+                      onChange={(e) => setFormData({...formData, department: e.target.value})}
+                      className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
+                    >
+                      <option value="">Select your department...</option>
+                      {availableDepartments.map(dept => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                      <option value="Other">Other / Not Listed</option>
+                    </select>
+                  );
+                } else {
+                  return (
+                    <input 
+                      type="text"
+                      required
+                      value={formData.department}
+                      onChange={(e) => setFormData({...formData, department: e.target.value})}
+                      className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
+                      placeholder="e.g. Computer Science"
+                    />
+                  );
+                }
+              })()}
             </div>
             
             <div>
@@ -155,7 +181,7 @@ export default function CompleteProfile() {
                 required
                 value={formData.yearOfStudy}
                 onChange={(e) => setFormData({...formData, yearOfStudy: e.target.value})}
-                className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white"
+                className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
               >
                 <option value="">Select current year...</option>
                 <option value="First Year">First Year (1st)</option>

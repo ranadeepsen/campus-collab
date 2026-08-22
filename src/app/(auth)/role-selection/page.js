@@ -47,19 +47,19 @@ export default function RoleSelection() {
         <button 
           onClick={() => handleRoleSelect('current')}
           disabled={loading}
-          className="w-full p-4 border-2 border-border-light rounded-xl hover:border-primary hover:bg-accent-soft transition-all text-left flex flex-col disabled:opacity-50"
+          className="w-full p-4 border-2 border-border-light rounded-xl hover:border-primary bg-white hover:bg-gray-50 transition-all text-left flex flex-col disabled:opacity-50"
         >
-          <span className="font-bold text-text-main">Current Student</span>
-          <span className="text-sm text-muted">I am currently enrolled in a college or university.</span>
+          <span className="font-bold text-gray-900">Current Student</span>
+          <span className="text-sm text-gray-500">I am currently enrolled in a college or university.</span>
         </button>
 
         <button 
           onClick={() => handleRoleSelect('prospective')}
           disabled={loading}
-          className="w-full p-4 border-2 border-border-light rounded-xl hover:border-primary hover:bg-accent-soft transition-all text-left flex flex-col disabled:opacity-50"
+          className="w-full p-4 border-2 border-border-light rounded-xl hover:border-primary bg-white hover:bg-gray-50 transition-all text-left flex flex-col disabled:opacity-50"
         >
-          <span className="font-bold text-text-main">Prospective Student</span>
-          <span className="text-sm text-muted">I am looking to explore colleges and connect with mentors.</span>
+          <span className="font-bold text-gray-900">Prospective Student</span>
+          <span className="text-sm text-gray-500">I am looking to explore colleges and connect with mentors.</span>
         </button>
       </div>
     </AuthShell>

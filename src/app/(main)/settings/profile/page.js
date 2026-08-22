@@ -168,7 +168,7 @@ export default function EditProfilePage() {
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
               className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-background"
-              placeholder="John Doe"
+              placeholder="Enter your name"
             />
           </div>
 
@@ -194,7 +194,7 @@ export default function EditProfilePage() {
                   <select
                     required
                     value={formData.college}
-                    onChange={(e) => setFormData({...formData, college: e.target.value})}
+                    onChange={(e) => setFormData({...formData, college: e.target.value, department: ''})}
                     className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-background"
                   >
                     <option value="">Select your college...</option>
@@ -248,14 +248,38 @@ export default function EditProfilePage() {
 
               <div>
                 <label className="block text-sm font-bold text-text-main mb-1.5">Department / Branch</label>
-                <input 
-                  type="text"
-                  required
-                  value={formData.department}
-                  onChange={(e) => setFormData({...formData, department: e.target.value})}
-                  className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-background"
-                  placeholder="e.g. Computer Science"
-                />
+                {(() => {
+                  const selectedCollegeObj = colleges.find(c => c._id === formData.college);
+                  const availableDepartments = selectedCollegeObj?.departments || [];
+                  
+                  if (availableDepartments.length > 0) {
+                    return (
+                      <select
+                        required
+                        value={formData.department}
+                        onChange={(e) => setFormData({...formData, department: e.target.value})}
+                        className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-background"
+                      >
+                        <option value="">Select your department...</option>
+                        {availableDepartments.map(dept => (
+                          <option key={dept} value={dept}>{dept}</option>
+                        ))}
+                        <option value="Other">Other / Not Listed</option>
+                      </select>
+                    );
+                  } else {
+                    return (
+                      <input 
+                        type="text"
+                        required
+                        value={formData.department}
+                        onChange={(e) => setFormData({...formData, department: e.target.value})}
+                        className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-background"
+                        placeholder="e.g. Computer Science"
+                      />
+                    );
+                  }
+                })()}
               </div>
               
               <div>
