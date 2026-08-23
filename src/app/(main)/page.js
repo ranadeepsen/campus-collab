@@ -39,7 +39,7 @@ function FeedContent() {
         if (filters.timeRange !== 'all') queryParams.append('timeRange', filters.timeRange);
 
         const [postsRes, profileRes] = await Promise.all([
-          fetch(/api/posts? + queryParams.toString()),
+          fetch('/api/posts?' + queryParams.toString()),
           !profile ? fetch('/api/users/me/profile') : Promise.resolve({ ok: true, json: () => Promise.resolve(profile) })
         ]);
         
@@ -156,6 +156,7 @@ export default function Home() {
     </Suspense>
   );
 }
+
 
 
 
