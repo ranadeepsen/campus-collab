@@ -66,7 +66,7 @@ export default function MobileFeedWidgets({ profile }) {
               return (
                 <Link 
                   key={evt._id}
-                  href={/events?eventId=}
+                  href={`/events?eventId=${evt._id}`}
                   className="snap-start shrink-0 w-[240px] bg-white border border-gray-100 rounded-2xl p-3 shadow-sm flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-xl bg-[#F0EBFD] flex flex-col items-center justify-center shrink-0">
@@ -87,3 +87,5 @@ export default function MobileFeedWidgets({ profile }) {
     </div>
   );
 }
+
+
