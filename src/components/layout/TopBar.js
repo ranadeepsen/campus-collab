@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -39,7 +39,7 @@ export default function TopBar() {
         urlParams.delete('q');
       }
       
-      const newUrl = ${pathname};
+      const newUrl = `${pathname}?${urlParams.toString()}`;
       // Use replace so we don't spam the browser history
       router.replace(newUrl, { scroll: false });
     }, 400); // 400ms debounce

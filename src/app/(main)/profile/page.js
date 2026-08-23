@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -77,7 +77,7 @@ export default function MobileProfilePage() {
               {profile?.profile?.college?.name || 'No College Selected'}
             </p>
             <p className="text-[11px] text-purple-200/80 truncate mt-0.5">
-              {profile?.profile?.yearOfStudy ? ${profile.profile.yearOfStudy},  : ''}
+              {profile?.profile?.yearOfStudy ? `${profile.profile.yearOfStudy}, ` : ''}
               {profile?.profile?.department || ''}
             </p>
           </div>
@@ -85,7 +85,7 @@ export default function MobileProfilePage() {
         </div>
 
         {/* Stats Grid */}
-        <div className={grid pt-4 border-t border-white/20 text-center gap-2 }>
+        <div className="grid grid-cols-3 pt-4 border-t border-white/20 text-center gap-2">
           <div>
             <div className="text-xs font-medium text-purple-200 mb-1">Posts</div>
             <div className="font-extrabold text-lg text-white">{profile?.stats?.posts || 0}</div>

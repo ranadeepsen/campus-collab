@@ -150,14 +150,14 @@ export default function VerifyEmail() {
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => { setActiveTab('email'); setError(''); setSuccess(''); }}
-          className={lex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors \}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors `}
         >
           <Mail className="w-4 h-4" />
           College Email
         </button>
         <button
           onClick={() => { setActiveTab('document'); setError(''); setSuccess(''); }}
-          className={lex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors \}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors `}
         >
           <FileText className="w-4 h-4" />
           ID Card
@@ -296,3 +296,4 @@ export default function VerifyEmail() {
     </AuthShell>
   );
 }
+

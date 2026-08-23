@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from 'react';
 import AuthShell from '@/components/layout/AuthShell';
@@ -44,7 +44,7 @@ export default function VerificationPending() {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 p-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={\ w-4 h-4} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Check Status Now
           </button>
         </div>
