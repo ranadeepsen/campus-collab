@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/server/lib/db';
 import Post from '@/server/models/Post';
 import User from '@/server/models/User';
+import Notification from '@/server/models/Notification';
 
 export async function POST(req, { params }) {
   try {
@@ -26,8 +27,26 @@ export async function POST(req, { params }) {
     
     if (hasLiked) {
       post.likes = post.likes.filter(id => id.toString() !== user._id.toString());
+      // Optionally remove notification here
+      await Notification.deleteOne({ 
+        recipient: post.author, 
+        relatedUser: user._id, 
+        type: 'like',
+        link: `/post/${post._id}` 
+      });
     } else {
       post.likes.push(user._id);
+      
+      // Notify author if it's not their own post
+      if (post.author.toString() !== user._id.toString()) {
+        await Notification.create({
+          recipient: post.author,
+          type: 'like',
+          message: `${user.profile?.name || 'Someone'} liked your post.`,
+          link: `/post/${post._id}`,
+          relatedUser: user._id
+        });
+      }
     }
 
     await post.save();

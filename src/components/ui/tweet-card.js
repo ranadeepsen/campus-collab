@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import Image from "next/image";
@@ -111,9 +111,9 @@ export default function TweetCard({
   };
 
   return (
-    <article className="w-full bg-white rounded-2xl p-4 border border-gray-100 shadow-sm transition-all">
+    <article className="w-full bg-white rounded-2xl px-0 py-4 sm:p-4 border border-gray-100 shadow-sm transition-all">
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between mb-3 px-4 sm:px-0">
         <div className="flex items-center gap-3">
           <div className="relative w-9 h-9 rounded-full overflow-hidden border border-gray-200 shrink-0 bg-gray-100">
             <Image
@@ -135,16 +135,16 @@ export default function TweetCard({
             </div>
             <div className="flex items-center flex-wrap gap-x-1.5 gap-y-1 mt-1 text-[11px] text-gray-500 font-medium">
               <span>{author.collegeInfo}</span>
-              <span className="text-gray-300">•</span>
+              <span className="text-gray-300">â€¢</span>
               <span>{timestamp}</span>
               {type === 'poll' && (
                 <span className="ml-1 bg-purple-50 text-[#5D22D7] px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
-                  📊 Poll
+                  ðŸ“Š Poll
                 </span>
               )}
               {type === 'event' && (
                 <span className="ml-1 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
-                  🎫 Event
+                  ðŸŽ« Event
                 </span>
               )}
             </div>
@@ -345,3 +345,4 @@ export default function TweetCard({
     </article>
   );
 }
+

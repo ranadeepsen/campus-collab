@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import AuthShell from '@/components/layout/AuthShell';
@@ -16,6 +16,11 @@ export default function VerifyEmail() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [emailAddressObj, setEmailAddressObj] = useState(null);
   
+  // Document Flow State
+  const [colleges, setColleges] = useState([]);
+  const [selectedDocCollege, setSelectedDocCollege] = useState('');
+  const [customDocCollege, setCustomDocCollege] = useState('');
+  
   // Shared State
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,18 +33,22 @@ export default function VerifyEmail() {
     if (isLoaded && user && !user.publicMetadata.user_type) {
       window.location.replace('/role-selection');
     }
+    
+    // Fetch colleges for document flow
+    fetch('/api/colleges')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setColleges(data);
+      })
+      .catch(console.error);
   }, [isLoaded, user]);
 
-
-
-  // 1. Submit email to check domain and start Clerk flow
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     
     try {
-      // Check domain first
       const res = await fetch('/api/users/verify/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -53,7 +62,6 @@ export default function VerifyEmail() {
       if (data.matched) {
         setCollegeId(data.collegeId);
         
-        // Start Clerk Email OTP Flow
         const emailAddress = await user.createEmailAddress({ email });
         await emailAddress.prepareVerification({ strategy: 'email_code' });
         
@@ -70,18 +78,15 @@ export default function VerifyEmail() {
     }
   };
 
-  // 2. Verify Clerk OTP
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     
     try {
-      // Verify with Clerk
       const verifyAttempt = await emailAddressObj.attemptVerification({ code });
       
       if (verifyAttempt.verification.status === 'verified') {
-        // Finalize on our backend
         const res = await fetch('/api/users/verify/email', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -91,7 +96,7 @@ export default function VerifyEmail() {
         if (!res.ok) throw new Error('Failed to finalize verification');
         
         setSuccess('Email verified successfully!');
-        await getToken({ skipCache: true }); // refresh claims
+        await getToken({ skipCache: true });
         window.location.replace('/complete-profile');
       } else {
         setError('Invalid verification code.');
@@ -103,17 +108,29 @@ export default function VerifyEmail() {
     }
   };
 
-  // 3. Document Upload Completion
   const handleDocumentUpload = async (result) => {
     setLoading(true);
     setError('');
+    
+    if (selectedDocCollege === 'other' && !customDocCollege.trim()) {
+      setError('Please enter your college name');
+      setLoading(false);
+      return;
+    }
+    
     try {
       const documentUrl = result.info.secure_url;
+      
+      const payload = { 
+        documentUrl, 
+        collegeId: selectedDocCollege !== 'other' ? selectedDocCollege : null,
+        customCollegeRequest: selectedDocCollege === 'other' ? customDocCollege : null
+      };
       
       const res = await fetch('/api/users/verify/document', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentUrl })
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
@@ -130,18 +147,17 @@ export default function VerifyEmail() {
   return (
     <AuthShell title="Verify Student Status" subtitle="Choose how you'd like to verify your enrollment.">
       
-      {/* Tabs */}
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => { setActiveTab('email'); setError(''); setSuccess(''); }}
-          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors ${activeTab === 'email' ? 'bg-[#F0EBFD] text-[#5D22D7] border border-[#5D22D7]/20' : 'bg-white border border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+          className={lex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors \}
         >
           <Mail className="w-4 h-4" />
           College Email
         </button>
         <button
           onClick={() => { setActiveTab('document'); setError(''); setSuccess(''); }}
-          className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors ${activeTab === 'document' ? 'bg-[#F0EBFD] text-[#5D22D7] border border-[#5D22D7]/20' : 'bg-white border border-gray-200 text-gray-500 hover:bg-gray-50'}`}
+          className={lex-1 py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors \}
         >
           <FileText className="w-4 h-4" />
           ID Card
@@ -174,7 +190,7 @@ export default function VerifyEmail() {
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Verification Code'}
               </button>
               <p className="text-xs text-gray-500 text-center mt-3">
-                Instant access. We&apos;ll send a 6-digit code to this address.
+                Instant access. We'll send a 6-digit code to this address.
               </p>
             </form>
           ) : (
@@ -201,7 +217,7 @@ export default function VerifyEmail() {
               <button 
                 type="button"
                 onClick={() => setPendingVerification(false)}
-                className="w-full p-2 text-sm text-gray-500 hover:underline"
+                className="w-full p-2 text-sm text-gray-500 hover:underline w-full"
               >
                 Use a different email
               </button>
@@ -209,46 +225,72 @@ export default function VerifyEmail() {
           )}
         </div>
       ) : (
-        <div className="space-y-4 text-center">
-          <div className="bg-amber-50 rounded-xl p-4 mb-4">
-            <p className="text-sm text-amber-800 font-medium text-left">
-              Don&apos;t have a college email yet? Upload a clear photo of your Student ID card or admission letter. This method requires manual review by an admin.
-            </p>
-          </div>
+        <div className="space-y-4 text-left">
           
-          <CldUploadWidget 
-            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'campus_collab_posts'}
-            onSuccess={handleDocumentUpload}
-          >
-            {({ open }) => {
-              return (
-                <button 
-                  type="button"
-                  onClick={() => open()}
-                  disabled={loading}
-                  className="w-full p-4 border-2 border-dashed border-[#5D22D7]/30 bg-[#F0EBFD]/50 hover:bg-[#F0EBFD] rounded-xl font-bold text-[#5D22D7] transition-all flex flex-col items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                  ) : (
-                    <>
-                      <FileText className="w-8 h-8 opacity-70" />
-                      <span>Click to Upload ID Document</span>
-                    </>
-                  )}
-                </button>
-              );
-            }}
-          </CldUploadWidget>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Select Your College</label>
+            <select
+              value={selectedDocCollege}
+              onChange={(e) => setSelectedDocCollege(e.target.value)}
+              className="w-full p-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#5D22D7] bg-white text-gray-900"
+            >
+              <option value="">Choose a college...</option>
+              {colleges.map(c => (
+                <option key={c._id} value={c._id}>{c.name}</option>
+              ))}
+              <option value="other" className="font-bold">Other / My college is not listed</option>
+            </select>
+          </div>
 
-          <button 
-            type="button"
-            onClick={() => handleDocumentUpload({ info: { secure_url: 'https://dummyimage.com/600x400/ccc/000.png&text=Dev+ID+Upload' } })}
-            disabled={loading}
-            className="w-full mt-2 p-2 text-sm font-bold text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-          >
-            Skip Upload (Dev Only)
-          </button>
+          {selectedDocCollege === 'other' && (
+            <div>
+              <label className="block text-sm font-bold text-blue-900 mb-1">College Name</label>
+              <input 
+                type="text"
+                required
+                value={customDocCollege}
+                onChange={(e) => setCustomDocCollege(e.target.value)}
+                className="w-full p-3 border border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 bg-white text-gray-900"
+                placeholder="Enter your college's full name"
+              />
+            </div>
+          )}
+
+          {selectedDocCollege && (
+            <>
+              <div className="bg-blue-50 rounded-xl p-4 my-2">
+                <p className="text-sm text-blue-800 font-medium text-left">
+                  Please upload your college verification document. This should be a clear photo of your Student ID card or an official admission letter that proves you are enrolled at your college.
+                </p>
+              </div>
+              
+              <CldUploadWidget 
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'campus_collab_posts'}
+                onSuccess={handleDocumentUpload}
+              >
+                {({ open }) => {
+                  return (
+                    <button 
+                      type="button"
+                      onClick={() => open()}
+                      disabled={loading || (selectedDocCollege === 'other' && !customDocCollege.trim())}
+                      className="w-full p-4 border-2 border-dashed border-[#5D22D7]/30 bg-[#F0EBFD]/50 hover:bg-[#F0EBFD] rounded-xl font-bold text-[#5D22D7] transition-all flex flex-col items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {loading ? (
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                      ) : (
+                        <>
+                          <FileText className="w-8 h-8 opacity-70" />
+                          <span>Click to Upload Verification Document</span>
+                        </>
+                      )}
+                    </button>
+                  );
+                }}
+              </CldUploadWidget>
+            </>
+          )}
+
         </div>
       )}
     </AuthShell>

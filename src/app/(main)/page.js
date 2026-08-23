@@ -1,14 +1,16 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import TweetCard from '@/components/ui/tweet-card';
 import PostComposer from '@/components/feed/PostComposer';
 import FeedFilters from '@/components/feed/FeedFilters';
+import MobileFeedWidgets from '@/components/feed/MobileFeedWidgets';
 import { Loader2, Lock } from 'lucide-react';
 
 function FeedContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const q = searchParams.get('q');
 
   const [posts, setPosts] = useState([]);
@@ -37,7 +39,7 @@ function FeedContent() {
         if (filters.timeRange !== 'all') queryParams.append('timeRange', filters.timeRange);
 
         const [postsRes, profileRes] = await Promise.all([
-          fetch(`/api/posts?${queryParams.toString()}`),
+          fetch(/api/posts? + queryParams.toString()),
           !profile ? fetch('/api/users/me/profile') : Promise.resolve({ ok: true, json: () => Promise.resolve(profile) })
         ]);
         
@@ -61,7 +63,7 @@ function FeedContent() {
     };
 
     loadData();
-  }, [filters, q]);
+  }, [filters, q, router]);
 
   const handlePostCreated = (newPost) => {
     setPosts(prevPosts => [newPost, ...prevPosts]);
@@ -84,7 +86,7 @@ function FeedContent() {
       author: {
         name: post.author?.profile?.name || "Student",
         handle: post.author?.profile?.name?.toLowerCase().replace(/\s+/g, '_') || "student",
-        collegeInfo: `${post.college?.name || 'Campus Collab'} • ${post.author?.profile?.department || 'Student'}`,
+        collegeInfo: `${post.college?.name || 'Campus Collab'} â€¢ ${post.author?.profile?.department || 'Student'}`,
         avatarSrc: post.author?.profile?.photo || "/default-avatar.png",
         isVerified: true,
       },
@@ -110,9 +112,11 @@ function FeedContent() {
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-4 mb-2">
         {canPost ? (
+          <div className="hidden lg:block">
           <PostComposer onPostCreated={handlePostCreated} profile={profile} />
+        </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center gap-3 text-gray-500">
+          <div className="hidden lg:flex bg-white rounded-2xl border border-gray-100 p-4 shadow-sm items-center gap-3 text-gray-500">
             <Lock className="w-5 h-5 shrink-0 text-[#5D22D7]" />
             <p className="text-sm">
               {access?.feedMode === 'read-only'
@@ -123,6 +127,7 @@ function FeedContent() {
         )}
 
         <FeedFilters filters={filters} setFilters={setFilters} />
+        <MobileFeedWidgets profile={profile} />
       </div>
 
       <div className="space-y-5">
@@ -151,3 +156,6 @@ export default function Home() {
     </Suspense>
   );
 }
+
+
+

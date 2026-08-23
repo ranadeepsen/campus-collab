@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/server/lib/db';
 import Post from '@/server/models/Post';
 import User from '@/server/models/User';
+import Notification from '@/server/models/Notification';
 import { getAccessState } from '@/server/lib/getAccessState';
 
 export async function POST(req, { params }) {
@@ -38,6 +39,17 @@ export async function POST(req, { params }) {
     post.comments.push(comment);
     await post.save();
     
+    // Notify author if it's not their own post
+    if (post.author.toString() !== user._id.toString()) {
+      await Notification.create({
+        recipient: post.author,
+        type: 'comment',
+        message: `${user.profile?.name || 'Someone'} commented on your post: "${content.substring(0, 30)}${content.length > 30 ? '...' : ''}"`,
+        link: `/post/${post._id}`,
+        relatedUser: user._id
+      });
+    }
+
     // Repopulate author for response
     await post.populate('comments.author', 'profile.name profile.photo');
     const newComment = post.comments[post.comments.length - 1];

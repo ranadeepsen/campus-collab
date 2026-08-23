@@ -1,7 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import MobileHubTabs from '@/components/layout/MobileHubTabs';
 import { useUser } from '@clerk/nextjs';
 import { Plus } from 'lucide-react';
 import ClubCard from '@/components/shared/ClubCard';
@@ -112,3 +113,5 @@ export default function ClubsPage() {
     </div>
   );
 }
+
+

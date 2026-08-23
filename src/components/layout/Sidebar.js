@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -63,13 +63,13 @@ export default function Sidebar() {
     { icon: UserPlus, label: 'Connections', href: '/connections' },
     { icon: Calendar, label: 'Events', href: '/events' },
     { icon: Users, label: 'Clubs & Societies', href: '/clubs' },
-    { icon: GraduationCap, label: 'Mentorship', href: '/mentors' },
+    { icon: GraduationCap, label: 'Ambassadors', href: '/mentors' },
     { icon: MessageSquare, label: 'Messages', href: '/messages' },
     { icon: Bookmark, label: 'Saved', href: '/saved' },
   ];
 
   const navItems = user_type === 'prospective' 
-    ? allNavItems.filter(item => ['Feed', 'Mentorship'].includes(item.label))
+    ? allNavItems.filter(item => ['Feed', 'Ambassadors', 'Connections', 'Messages'].includes(item.label))
     : allNavItems;
 
   const quickLinks = [
@@ -292,3 +292,5 @@ export default function Sidebar() {
     </div>
   );
 }
+
+

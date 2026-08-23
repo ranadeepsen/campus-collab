@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import { Users, Search, MessageSquare, UserPlus, Clock, CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import MobileHubTabs from '@/components/layout/MobileHubTabs';
 
 export default function HubPage() {
   const [students, setStudents] = useState([]);
@@ -107,7 +108,7 @@ export default function HubPage() {
 
   return (
     <div className="space-y-5">
-      
+      <MobileHubTabs />
       {/* Hero Header Div */}
       <div className="bg-gradient-to-r from-[#5D22D7] to-[#8B4CFF] rounded-2xl px-6 py-5 sm:px-8 sm:py-6 shadow-md text-white relative overflow-hidden flex flex-col justify-center">
         {/* Background graphic elements */}
@@ -256,3 +257,4 @@ export default function HubPage() {
     </div>
   );
 }
+

@@ -49,7 +49,7 @@ export default function RoleSelection() {
           disabled={loading}
           className="w-full p-4 border-2 border-border-light rounded-xl hover:border-primary bg-white hover:bg-gray-50 transition-all text-left flex flex-col disabled:opacity-50"
         >
-          <span className="font-bold text-gray-900">Current Student</span>
+          <span className="font-bold text-gray-900">Regular Student</span>
           <span className="text-sm text-gray-500">I am currently enrolled in a college or university.</span>
         </button>
 
@@ -58,7 +58,7 @@ export default function RoleSelection() {
           disabled={loading}
           className="w-full p-4 border-2 border-border-light rounded-xl hover:border-primary bg-white hover:bg-gray-50 transition-all text-left flex flex-col disabled:opacity-50"
         >
-          <span className="font-bold text-gray-900">Prospective Student</span>
+          <span className="font-bold text-gray-900">Upcoming Student</span>
           <span className="text-sm text-gray-500">I am looking to explore colleges and connect with mentors.</span>
         </button>
       </div>

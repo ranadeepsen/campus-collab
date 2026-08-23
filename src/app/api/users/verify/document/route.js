@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/server/lib/db';
 import User from '@/server/models/User';
@@ -9,7 +9,7 @@ export async function POST(req) {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { documentUrl } = await req.json();
+    const { documentUrl, collegeId, customCollegeRequest } = await req.json();
 
     if (!documentUrl) {
       return NextResponse.json({ error: "Document URL is required" }, { status: 400 });
@@ -33,9 +33,19 @@ export async function POST(req) {
     user.status = 'pending_review';
     user.verification_method = 'college_id_card';
     user.verification_document = documentUrl;
+    
+    // Save the college they selected during verification
+    if (collegeId) {
+      user.profile.college = collegeId;
+      user.customCollegeRequest = null;
+    } else if (customCollegeRequest) {
+      user.profile.college = null;
+      user.customCollegeRequest = customCollegeRequest;
+    }
+
     await user.save();
 
-    // Upsert queue entry — avoid duplicates on re-upload
+    // Upsert queue entry 
     await IdVerificationQueue.findOneAndUpdate(
       { user: user._id, status: 'pending' },
       { user: user._id, imageUrl: documentUrl, status: 'pending' },

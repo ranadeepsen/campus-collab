@@ -1,9 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import AuthShell from '@/components/layout/AuthShell';
 import { useAuth, useUser } from '@clerk/nextjs';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Camera } from 'lucide-react';
+import { CldUploadWidget } from 'next-cloudinary';
+import Image from 'next/image';
 
 export default function CompleteProfile() {
   const { user } = useUser();
@@ -12,20 +14,37 @@ export default function CompleteProfile() {
 
   const [colleges, setColleges] = useState([]);
   const [collegesLoading, setCollegesLoading] = useState(true);
+  const [isCollegeLocked, setIsCollegeLocked] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
+    photo: '',
     college: '',
+    customCollege: '',
     course: '',
     department: '',
     yearOfStudy: '',
     bio: ''
   });
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { getToken } = useAuth();
 
   useEffect(() => {
+    fetch('/api/users/me/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data.profile?.college) {
+          setFormData(prev => ({ ...prev, college: data.profile.college._id }));
+          setIsCollegeLocked(true);
+        } else if (data.customCollegeRequest) {
+          setFormData(prev => ({ ...prev, college: 'other', customCollege: data.customCollegeRequest }));
+          setIsCollegeLocked(true);
+        }
+      })
+      .catch(console.error);
+
     if (!isProspective) {
       fetch('/api/colleges')
         .then(res => res.json())
@@ -35,7 +54,6 @@ export default function CompleteProfile() {
         .catch(console.error)
         .finally(() => setCollegesLoading(false));
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCollegesLoading(false);
     }
   }, [isProspective]);
@@ -44,7 +62,7 @@ export default function CompleteProfile() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       const res = await fetch('/api/users/me/profile', {
         method: 'PUT',
@@ -70,6 +88,37 @@ export default function CompleteProfile() {
       {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-4 text-sm">{error}</div>}
       
       <form onSubmit={handleSubmit} className="space-y-4">
+        
+        {/* Profile Photo (Optional) */}
+        <div className="flex flex-col items-center justify-center py-2">
+          <CldUploadWidget 
+            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'campus_collab_posts'}
+            onSuccess={(result) => setFormData({...formData, photo: result.info.secure_url})}
+          >
+            {({ open }) => (
+              <button 
+                type="button" 
+                onClick={() => open()}
+                className="group relative w-24 h-24 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center overflow-hidden hover:border-[#5D22D7] transition-colors"
+              >
+                {formData.photo ? (
+                  <Image src={formData.photo} alt="Profile" fill className="object-cover" sizes="96px" />
+                ) : (
+                  <>
+                    <Camera className="w-6 h-6 text-gray-400 group-hover:text-[#5D22D7] mb-1" />
+                    <span className="text-[10px] font-bold text-gray-400 group-hover:text-[#5D22D7]">Add Photo</span>
+                  </>
+                )}
+                {formData.photo && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Camera className="w-6 h-6 text-white" />
+                  </div>
+                )}
+              </button>
+            )}
+          </CldUploadWidget>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-text-main mb-1">Full Name</label>
           <input 
@@ -82,18 +131,7 @@ export default function CompleteProfile() {
           />
         </div>
 
-        {isProspective ? (
-          <div>
-            <label className="block text-sm font-medium text-text-main mb-1">About You (optional)</label>
-            <textarea
-              value={formData.bio}
-              onChange={(e) => setFormData({...formData, bio: e.target.value})}
-              className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900 resize-none"
-              rows={3}
-              placeholder="What colleges or programs are you exploring?"
-            />
-          </div>
-        ) : (
+        {!isProspective && (
           <>
             <div>
               <label className="block text-sm font-medium text-text-main mb-1">College / University</label>
@@ -104,19 +142,38 @@ export default function CompleteProfile() {
               ) : (
                 <select
                   required
+                  disabled={isCollegeLocked}
                   value={formData.college}
                   onChange={(e) => {
-                    setFormData({...formData, college: e.target.value, department: ''});
+                    setFormData({...formData, college: e.target.value, department: '', customCollege: ''});
                   }}
-                  className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900"
+                  className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900 disabled:bg-gray-100 disabled:opacity-70"
                 >
                   <option value="">Select your college...</option>
                   {colleges.map(c => (
                     <option key={c._id} value={c._id}>{c.name}</option>
                   ))}
+                  <option value="other" className="font-bold">Other / My college is not listed</option>
                 </select>
               )}
             </div>
+
+            {formData.college === 'other' && (
+              <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-blue-900 mb-1">College Name</label>
+                  <input 
+                    type="text"
+                    required
+                    disabled={isCollegeLocked}
+                    value={formData.customCollege}
+                    onChange={(e) => setFormData({...formData, customCollege: e.target.value})}
+                    className="w-full p-3 border border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 bg-white text-gray-900 disabled:bg-blue-50 disabled:opacity-70"
+                    placeholder="Enter your college's full name"
+                  />
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-text-main mb-1">Course / Degree</label>
@@ -145,7 +202,7 @@ export default function CompleteProfile() {
                 const selectedCollegeObj = colleges.find(c => c._id === formData.college);
                 const availableDepartments = selectedCollegeObj?.departments || [];
                 
-                if (availableDepartments.length > 0) {
+                if (availableDepartments.length > 0 && formData.college !== 'other') {
                   return (
                     <select
                       required
@@ -194,11 +251,23 @@ export default function CompleteProfile() {
             </div>
           </>
         )}
+
+        {/* Bio available to everyone */}
+        <div>
+          <label className="block text-sm font-medium text-text-main mb-1">About You (optional)</label>
+          <textarea
+            value={formData.bio}
+            onChange={(e) => setFormData({...formData, bio: e.target.value})}
+            className="w-full p-3 border border-border-light rounded-xl focus:outline-none focus:border-primary bg-white text-gray-900 resize-none"
+            rows={3}
+            placeholder={isProspective ? "What colleges or programs are you exploring?" : "Tell us a little about yourself..."}
+          />
+        </div>
         
         <button 
           type="submit"
           disabled={loading || !formData.name || (!isProspective && (!formData.college || !formData.course || !formData.yearOfStudy))}
-          className="w-full p-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dark transition-all disabled:opacity-50"
+          className="w-full p-3 bg-[#5D22D7] text-white rounded-xl font-bold hover:bg-[#4C1D95] transition-all disabled:opacity-50"
         >
           {loading ? 'Saving...' : 'Complete Profile'}
         </button>

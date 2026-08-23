@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   clerkId: { type: String, required: true, unique: true },
@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   status: { type: String, enum: ['unverified', 'pending_review', 'verified', 'rejected', 'suspended'], default: 'unverified' },
   verification_method: { type: String, enum: ['college_email', 'college_id_card', null], default: null },
   verification_document: { type: String, default: null },
+  customCollegeRequest: { type: String, default: null },
   review_reason: { type: String, default: null },
   profileCompleted: { type: Boolean, default: false },
   isAmbassador: { type: Boolean, default: false },
@@ -38,3 +39,4 @@ const UserSchema = new mongoose.Schema({
 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);
+

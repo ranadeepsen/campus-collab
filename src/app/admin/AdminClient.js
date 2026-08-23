@@ -132,7 +132,9 @@ export function AdminDashboard({ adminRole }) {
                       <div className="mt-4 flex gap-3">
                         <div className="bg-[#F0EBFD] px-4 py-2 rounded-xl border border-[#5D22D7]/10">
                           <p className="text-[10px] text-[#5D22D7] font-bold mb-0.5 uppercase tracking-wider">College</p>
-                          <p className="font-bold text-gray-900 text-sm">{item.user?.profile?.college?.name || 'N/A'}</p>
+                          <p className="font-bold text-gray-900 text-sm">
+                            {item.user?.customCollegeRequest ? `Custom: ${item.user.customCollegeRequest}` : (item.user?.profile?.college?.name || 'N/A')}
+                          </p>
                         </div>
                         {activeTab === 'id_card' && (
                            <div className="bg-amber-50 px-4 py-2 rounded-xl border border-amber-100">
@@ -166,3 +168,5 @@ export function AdminDashboard({ adminRole }) {
       </>
   );
 }
+
+

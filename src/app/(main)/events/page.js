@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useUser } from '@clerk/nextjs';
 import EventCard from '@/components/events/EventCard';
 import EventComposer from '@/components/events/EventComposer';
+import MobileHubTabs from '@/components/layout/MobileHubTabs';
 import { Calendar, Filter, Loader2, MapPin } from 'lucide-react';
 
 export default function EventsPage() {
@@ -93,6 +94,7 @@ export default function EventsPage() {
 
   return (
     <div className="space-y-6 pb-20">
+      <MobileHubTabs />
       <div className="bg-gradient-to-br from-[#5D22D7] via-[#6320EE] to-[#7B2CBF] rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4"></div>
@@ -191,3 +193,5 @@ export default function EventsPage() {
     </div>
   );
 }
+
+

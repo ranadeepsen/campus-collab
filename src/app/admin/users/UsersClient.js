@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import { Users as UsersIcon, Loader2, ArrowLeft, Search, Ban, CheckCircle, RefreshCw, XCircle } from 'lucide-react';
@@ -144,7 +144,9 @@ export default function UsersClient({ adminId }) {
                         </div>
                       </td>
                       <td className="p-4">
-                        <div className="text-sm font-medium text-gray-700">{user.profile?.college?.name || '-'}</div>
+                        <div className="text-sm font-medium text-gray-700">{user.profile?.college?.name || user.customCollegeRequest || '-'}</div>
+                        {user.customCollegeRequest && <div className="text-[10px] text-blue-600 font-bold uppercase">Custom Request</div>}
+                        {user.verification_document && <a href={user.verification_document} target="_blank" rel="noreferrer" className="text-xs text-[#5D22D7] font-bold hover:underline inline-block mt-1">View Document</a>}
                       </td>
                       <td className="p-4 text-center">
                         <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full 
@@ -204,3 +206,4 @@ export default function UsersClient({ adminId }) {
     </>
   );
 }
+

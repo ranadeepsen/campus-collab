@@ -6,6 +6,7 @@ import { getAccessState } from '@/server/lib/getAccessState';
 
 import Post from '@/server/models/Post';
 import Connection from '@/server/models/Connection';
+import IdVerificationQueue from '@/server/models/IdVerificationQueue';
 
 export async function GET() {
   try {
@@ -43,7 +44,7 @@ export async function PUT(req) {
     if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const { name, photo, college, course, department, yearOfStudy, bio, interests } = body;
+    const { name, photo, college, course, department, yearOfStudy, bio, interests, customCollege, customCollegeDoc } = body;
 
     await connectDB();
     let user = await User.findOne({ clerkId: userId });
@@ -61,13 +62,32 @@ export async function PUT(req) {
     user.profile.name = name || user.profile.name;
     user.profile.photo = photo || user.profile.photo;
 
-    // Save fields if they are provided, regardless of strict user_type (e.g. admins might have null user_type)
-    if (college !== undefined) user.profile.college = college;
+    // Handle standard fields
     if (course !== undefined) user.profile.course = course;
     if (department !== undefined) user.profile.department = department;
     if (yearOfStudy !== undefined) user.profile.yearOfStudy = yearOfStudy;
     if (bio !== undefined) user.profile.bio = bio;
     if (interests !== undefined) user.profile.interests = interests;
+
+    // Handle Custom College vs Standard College
+    if (college === 'other') {
+      if (!user.profile.college) user.profile.college = null;
+      if (customCollege) user.customCollegeRequest = customCollege;
+      if (customCollegeDoc) {
+        user.verification_document = customCollegeDoc;
+        user.verification_method = 'college_id_card';
+        user.status = 'pending_review';
+        
+        await IdVerificationQueue.findOneAndUpdate(
+          { user: user._id, status: 'pending' },
+          { user: user._id, imageUrl: customCollegeDoc, status: 'pending' },
+          { upsert: true, new: true }
+        );
+      }
+    } else if (college !== undefined) {
+      user.profile.college = college;
+      user.customCollegeRequest = null;
+    }
 
     user.profileCompleted = true;
     await user.save();
@@ -88,3 +108,4 @@ export async function PUT(req) {
     return NextResponse.json({ error: error.message || "Internal Error" }, { status: 500 });
   }
 }
+

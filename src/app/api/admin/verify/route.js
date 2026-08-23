@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/server/lib/db';
 import User from '@/server/models/User';
@@ -15,7 +15,7 @@ export async function GET(req) {
     const queue = await IdVerificationQueue.find({ status: 'pending' })
       .populate({
         path: 'user',
-        select: 'profile email verification_method',
+        select: 'profile email verification_method customCollegeRequest',
         populate: { path: 'profile.college', select: 'name email_domains' }
       })
       .sort({ createdAt: 1 });
@@ -91,3 +91,4 @@ export async function POST(req) {
     return NextResponse.json({ error: "Internal Error" }, { status: 500 });
   }
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -309,6 +309,37 @@ export default function EditProfilePage() {
           </div>
         </form>
       </div>
+
+      {/* Danger Zone */}
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-red-100 mt-6">
+        <h2 className="text-xl font-bold text-red-600 mb-2">Danger Zone</h2>
+        <p className="text-sm text-gray-600 mb-6">
+          Once you delete your account, there is no going back. Please be certain.
+        </p>
+        <button 
+          type="button"
+          onClick={async () => {
+            if (window.confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+              if (window.confirm('Please confirm one more time. Delete account?')) {
+                try {
+                  const res = await fetch('/api/users/me', { method: 'DELETE' });
+                  if (res.ok) {
+                    window.location.replace('/sign-up');
+                  } else {
+                    alert('Failed to delete account. Please try again.');
+                  }
+                } catch (e) {
+                  alert('An error occurred.');
+                }
+              }
+            }
+          }}
+          className="px-6 py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl font-bold hover:bg-red-600 hover:text-white transition-all flex items-center gap-2"
+        >
+          <Trash2 className="w-4 h-4" /> Delete Account
+        </button>
+      </div>
     </div>
   );
 }
+
