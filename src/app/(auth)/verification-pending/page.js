@@ -1,14 +1,13 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import AuthShell from '@/components/layout/AuthShell';
-import { Clock, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Clock, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth, useUser } from '@clerk/nextjs';
 
 export default function VerificationPending() {
   const [loading, setLoading] = useState(false);
-  const [devLoading, setDevLoading] = useState(false);
   const { getToken } = useAuth();
   const { user, isLoaded } = useUser();
 
@@ -24,18 +23,6 @@ export default function VerificationPending() {
     await getToken({ skipCache: true });
     // Go to home so the main layout interceptor can route us correctly
     window.location.replace('/');
-  };
-
-  const handleDevApprove = async () => {
-    setDevLoading(true);
-    try {
-      await fetch('/api/dev/approve-me', { method: 'POST' });
-      await getToken({ skipCache: true });
-      window.location.replace('/complete-profile');
-    } catch (err) {
-      console.error(err);
-      setDevLoading(false);
-    }
   };
 
   return (
@@ -57,17 +44,8 @@ export default function VerificationPending() {
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 p-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={\ w-4 h-4} />
             Check Status Now
-          </button>
-          
-          <button 
-            onClick={handleDevApprove}
-            disabled={devLoading}
-            className="w-full flex items-center justify-center gap-2 p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl font-bold hover:bg-green-100 transition-colors disabled:opacity-50"
-          >
-            <CheckCircle2 className={`w-4 h-4 ${devLoading ? 'animate-bounce' : ''}`} />
-            Simulate Admin Approval (Dev Only)
           </button>
         </div>
 
