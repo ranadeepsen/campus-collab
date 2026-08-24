@@ -43,7 +43,7 @@ export default function MainLayoutWrapper({ children, isRightSidebarOpen, setIsR
       {/* Mobile Right Sidebar Drawer */}
       {!shouldHide && (
         <div 
-          className={`fixed top-0 right-0 h-full w-[300px] bg-[#F8F9FB] z-[70] transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`fixed top-0 right-0 h-full w-[300px] bg-white/80 backdrop-blur-2xl z-[70] transform transition-transform duration-300 ease-in-out lg:hidden shadow-[0_8px_32px_rgba(124,58,237,0.15)] border-l border-white/50 ${isRightSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
           <div className="h-full overflow-y-auto px-4 py-6">
             <div className="flex justify-between items-center mb-6">

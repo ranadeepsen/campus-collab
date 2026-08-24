@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -92,7 +92,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation List */}
-      <nav className="flex flex-col space-y-1">
+      <nav className="flex flex-col space-y-1.5">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href === '/' && pathname === '/');
           
@@ -100,19 +100,19 @@ export default function Sidebar() {
             <Link 
               key={item.label} 
               href={item.href}
-              className={`flex items-center justify-between px-4 py-2.5 rounded-xl transition-all font-semibold text-sm ${
+              className={`flex items-center justify-between px-4 py-2.5 rounded-[16px] transition-all font-semibold text-sm ${
                 isActive 
-                  ? 'bg-[#5D22D7] text-white shadow-[0_4px_14px_rgba(93,34,215,0.25)]' 
-                  : 'text-gray-700 hover:text-[#5D22D7] hover:bg-[#F0EBFD]/50'
+                  ? 'bg-gradient-to-br from-[var(--primary)] to-[var(--primary-light)] text-white shadow-[var(--shadow-soft)]' 
+                  : 'text-[var(--text-main)] hover:text-[var(--primary)] hover:bg-[var(--accent-soft)]'
               }`}
             >
               <div className="flex items-center gap-3.5">
-                <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+                <item.icon className={`w-5 h-5 ${isActive ? '' : 'text-[var(--muted)] group-hover:text-[var(--primary)]'}`} strokeWidth={isActive ? 2.5 : 2} />
                 <span>{item.label}</span>
               </div>
               {item.badge && (
                 <span className={`w-5 h-5 flex items-center justify-center rounded-full text-xs font-bold ${
-                  isActive ? 'bg-white text-[#5D22D7]' : 'bg-[#5D22D7] text-white'
+                  isActive ? 'bg-white text-[var(--primary)]' : 'bg-[var(--primary)] text-white'
                 }`}>
                   {item.badge}
                 </span>
@@ -123,10 +123,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Profile Card */}
-      <Link href="/settings/profile" className="bg-gradient-to-br from-[#5D22D7] via-[#6320EE] to-[#7B2CBF] rounded-2xl p-4 text-white shadow-md mt-1 block hover:shadow-lg transition-all group">
+      <Link href="/settings/profile" className="bg-gradient-to-br from-[var(--primary)] to-[var(--accent-pink)] rounded-[20px] p-4 text-white shadow-[var(--shadow-soft)] mt-2 block hover:shadow-lg transition-all group">
         <div className="flex items-center justify-between mb-3.5">
           <div className="flex items-center gap-3">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/40 shrink-0 shadow-sm bg-purple-800">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white/40 shrink-0 shadow-sm bg-[var(--primary-dark)]">
             {isLoaded ? (
               <img 
                 src={profile?.profile?.photo || user?.imageUrl || "/default-avatar.png"} 
@@ -143,7 +143,7 @@ export default function Sidebar() {
                 {profile?.profile?.name || user?.fullName || 'Loading...'}
               </h3>
               {profile?.ambassadorStatus === 'active' && (
-                <span className="bg-white text-[#5D22D7] text-[8px] font-black uppercase px-1.5 py-0.5 rounded shrink-0">
+                <span className="bg-white text-[var(--primary)] text-[8px] font-black uppercase px-1.5 py-0.5 rounded shrink-0">
                   Ambassador
                 </span>
               )}
@@ -189,8 +189,8 @@ export default function Sidebar() {
       </Link>
 
       {/* Quick Links Card */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-3.5 shadow-sm mt-auto">
-        <h4 className="font-bold text-xs text-gray-900 mb-2.5 px-1">Quick Links</h4>
+      <div className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-[20px] p-3.5 shadow-[var(--shadow-soft)] mt-auto">
+        <h4 className="font-bold text-xs text-[var(--text-main)] mb-2.5 px-1">Quick Links</h4>
         <div className="grid grid-cols-3 gap-2">
           {quickLinks.map((link) => {
             const ButtonOrLink = link.isLogout ? 'button' : Link;
@@ -208,10 +208,10 @@ export default function Sidebar() {
                 {...props}
                 className="group flex flex-col items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition-all text-center cursor-pointer border-none bg-transparent"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#F0EBFD] flex items-center justify-center text-[#5D22D7] group-hover:scale-105 transition-transform shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-[var(--accent-soft)] flex items-center justify-center text-[var(--primary)] group-hover:scale-105 transition-transform shadow-xs">
                   <link.icon className="w-4 h-4" />
                 </div>
-                <span className="text-[10px] font-medium text-gray-600 group-hover:text-[#5D22D7] leading-tight text-center">
+                <span className="text-[10px] font-medium text-gray-600 group-hover:text-[var(--primary)] leading-tight text-center">
                   {link.label}
                 </span>
               </ButtonOrLink>
@@ -242,7 +242,7 @@ export default function Sidebar() {
               className="relative w-full max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 p-6 z-10 overflow-hidden"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-[#F0EBFD] text-[#5D22D7] flex items-center justify-center mb-3">
+                <div className="w-12 h-12 rounded-full bg-[var(--accent-soft)] text-[var(--primary)] flex items-center justify-center mb-3">
                   <LogOut className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-1">
@@ -272,7 +272,7 @@ export default function Sidebar() {
                     type="button"
                     disabled={isLoggingOut}
                     onClick={handleLogout}
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-[#5D22D7] hover:bg-[#4C1D95] active:bg-[#3B1278] text-white font-bold text-xs shadow-[0_4px_14px_rgba(93,34,215,0.3)] transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
+                    className="flex-1 py-2.5 px-4 rounded-xl bg-[var(--primary)] hover:bg-[#4C1D95] active:bg-[#3B1278] text-white font-bold text-xs shadow-[0_4px_14px_rgba(93,34,215,0.3)] transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
                   >
                     {isLoggingOut ? (
                       <>

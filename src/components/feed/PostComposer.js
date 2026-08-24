@@ -137,32 +137,32 @@ export default function PostComposer({ onPostCreated, profile }) {
   if (!isExpanded) {
     return (
       <div 
-        className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm flex items-center gap-3 cursor-text transition-shadow hover:shadow-md"
+        className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-[20px] p-4 shadow-[var(--shadow-soft)] flex items-center gap-3 cursor-text transition-shadow hover:shadow-md"
         onClick={() => setIsExpanded(true)}
       >
-        <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 shrink-0 bg-gray-100 shadow-sm">
+        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/40 shrink-0 bg-gray-100 shadow-sm">
           <img 
             src={profile?.profile?.photo || user?.imageUrl || "/default-avatar.png"} 
             alt={profile?.profile?.name || user?.firstName || "User"} 
             className="w-full h-full object-cover" 
           />
         </div>
-        <div className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm text-gray-500 font-medium">
+        <div className="flex-1 bg-white/60 border border-white/50 rounded-full px-4 py-2.5 text-sm text-[var(--muted)] font-medium shadow-sm">
           What's on your mind, {profile?.profile?.name?.split(' ')[0] || user?.firstName || 'there'}?
         </div>
-        <div className="flex gap-2 text-gray-400">
-          <ImageIcon className="w-5 h-5 hover:text-blue-500 transition-colors" />
-          <BarChart2 className="w-5 h-5 hover:text-amber-500 transition-colors" />
+        <div className="flex gap-2 text-[var(--primary-light)]">
+          <ImageIcon className="w-5 h-5 hover:text-[var(--primary)] transition-colors" />
+          <BarChart2 className="w-5 h-5 hover:text-[var(--primary)] transition-colors" />
         </div>
       </div>
     );
   }
 
   return (
-    <div ref={formRef} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all">
+    <div ref={formRef} className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-[20px] p-5 shadow-[var(--shadow-soft)] transition-all">
       <form onSubmit={handleSubmit}>
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-11 h-11 rounded-full overflow-hidden border border-gray-200 shrink-0 bg-gray-100 shadow-sm">
+          <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white/40 shrink-0 bg-gray-100 shadow-sm">
             <img 
               src={profile?.profile?.photo || user?.imageUrl || "/default-avatar.png"} 
               alt={profile?.profile?.name || user?.firstName || "User"} 
@@ -178,7 +178,7 @@ export default function PostComposer({ onPostCreated, profile }) {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder={`What's on your mind, ${profile?.profile?.name?.split(' ')[0] || user?.firstName || 'there'}?`}
-                  className="w-full bg-transparent text-base text-gray-800 placeholder-gray-400 outline-none resize-none min-h-[100px]"
+                  className="w-full bg-transparent text-base text-[var(--text-main)] placeholder-[var(--muted)] outline-none resize-none min-h-[100px]"
                 />
                 {imageUrl && (
                   <div className="relative w-full max-w-md rounded-2xl overflow-hidden border border-gray-100 shadow-sm mt-2">

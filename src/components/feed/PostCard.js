@@ -35,7 +35,7 @@ export default function PostCard({ post }) {
   };
 
   return (
-    <div className="bg-surface rounded-2xl p-4 sm:p-5 shadow-sm border border-border-light">
+    <div className="bg-white/80 backdrop-blur-xl rounded-[20px] p-4 sm:p-6 shadow-[var(--shadow-soft)] border border-white/50">
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-accent-soft shrink-0">

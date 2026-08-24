@@ -65,24 +65,24 @@ export default function TopBar({ onOpenRightSidebar }) {
   }, [isLoaded, user]);
 
   return (
-    <header className="w-full flex items-center justify-between gap-3 px-1 lg:px-4">
+    <header className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-white/70 backdrop-blur-xl border border-white/50 shadow-[var(--shadow-soft)] rounded-[20px] sticky top-4 z-50">
       
       {/* Desktop Logo (Left) */}
       <div className="hidden lg:flex shrink-0 items-center">
-        <Link href="/" className="font-bold text-[#5D22D7] text-xl">Campus Collab</Link>
+        <Link href="/" className="font-bold text-[var(--primary)] text-xl">Campus Collab</Link>
       </div>
 
       {/* Search Bar (Center/Left on mobile) */}
       <div className="flex-1 w-full max-w-2xl">
         {pathname === '/' && (
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#5D22D7] transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--muted)] group-focus-within:text-[var(--primary)] transition-colors" />
             <input 
               type="text" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search for people, clubs, events..." 
-              className="w-full bg-white border border-gray-200/80 hover:border-gray-300 focus:border-[#5D22D7] focus:ring-4 focus:ring-[#5D22D7]/10 rounded-full py-2 pl-9 pr-4 text-sm outline-none transition-all text-gray-900 placeholder:text-gray-400 shadow-xs"
+              className="w-full bg-white/60 border border-white/50 hover:bg-white/80 focus:bg-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/10 rounded-full py-2.5 pl-11 pr-4 text-sm outline-none transition-all text-gray-900 placeholder-[var(--muted)] shadow-sm backdrop-blur-sm"
             />
           </div>
         )}
@@ -95,7 +95,7 @@ export default function TopBar({ onOpenRightSidebar }) {
         <button 
           type="button"
           onClick={() => router.push('/notifications')}
-          className="relative p-2 text-gray-600 hover:text-[#5D22D7] hover:bg-[#F0EBFD]/60 rounded-full transition-colors cursor-pointer"
+          className="relative p-2 text-[var(--muted)] hover:text-[var(--primary)] hover:bg-white/50 rounded-full transition-colors cursor-pointer"
           aria-label="Notifications"
         >
           <Bell className="w-[22px] h-[22px]" />
@@ -109,7 +109,7 @@ export default function TopBar({ onOpenRightSidebar }) {
           <button 
             type="button"
             onClick={() => router.push('/messages')}
-            className="hidden lg:block p-2 text-gray-600 hover:text-[#5D22D7] hover:bg-[#F0EBFD]/60 rounded-full transition-colors cursor-pointer"
+            className="hidden lg:block p-2 text-[var(--muted)] hover:text-[var(--primary)] hover:bg-white/50 rounded-full transition-colors cursor-pointer"
             aria-label="Messages"
           >
             <MessageSquare className="w-[22px] h-[22px]" />
@@ -120,19 +120,19 @@ export default function TopBar({ onOpenRightSidebar }) {
         <button 
           type="button"
           onClick={onOpenRightSidebar}
-          className="lg:hidden p-2 text-gray-600 hover:text-[#5D22D7] hover:bg-[#F0EBFD]/60 rounded-full transition-colors cursor-pointer"
+          className="lg:hidden p-2 text-[var(--muted)] hover:text-[var(--primary)] hover:bg-white/50 rounded-full transition-colors cursor-pointer"
           aria-label="Toggle Sidebar"
         >
           <PanelRight className="w-[22px] h-[22px]" />
         </button>
         
         {/* Avatar (Mobile and Desktop) */}
-        <div className="pl-1 flex items-center justify-center">
+        <div className="pl-2 flex items-center justify-center">
           <ClerkLoading>
-            <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse border border-gray-200 shadow-xs" />
+            <div className="w-9 h-9 rounded-full bg-gray-200 animate-pulse border-2 border-[var(--primary-light)]" />
           </ClerkLoading>
           <ClerkLoaded>
-            <UserButton afterSignOutUrl="/sign-in" appearance={{ elements: { avatarBox: "w-8 h-8 border border-gray-200 shadow-xs" } }} />
+            <UserButton afterSignOutUrl="/sign-in" appearance={{ elements: { avatarBox: "w-9 h-9 border-2 border-[var(--primary-light)] rounded-full shadow-sm" } }} />
           </ClerkLoaded>
         </div>
       </div>

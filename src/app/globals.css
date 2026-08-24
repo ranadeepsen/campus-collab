@@ -1,23 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8F9FB;
+  --background: transparent;
   --surface: #FFFFFF;
-  --primary: #5D22D7;
+  --primary: #7C3AED;
+  --primary-light: #A855F7;
   --primary-dark: #4C1D95;
-  --accent-soft: #F0EBFD;
+  --accent-pink: #C026D3;
+  --accent-soft: rgba(255,255,255,0.2);
+  --surface-glass: rgba(255,255,255,0.8);
   --gold: #F5B301;
-  --text-main: #111827;
+  --text-main: #1F2937;
   --muted: #6B7280;
-  --border-light: #F3F4F6;
+  --border-light: rgba(255,255,255,0.5);
+  --shadow-soft: 0 8px 24px rgba(124, 58, 237, 0.08);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
   --color-primary-dark: var(--primary-dark);
+  --color-accent-pink: var(--accent-pink);
   --color-accent-soft: var(--accent-soft);
+  --color-surface-glass: var(--surface-glass);
   --color-gold: var(--gold);
   --color-text-main: var(--text-main);
   --color-muted: var(--muted);
@@ -27,7 +34,10 @@
 }
 
 body {
-  background: var(--background);
+  background-image: url('/bg-clouds.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-sans);
 }

@@ -42,10 +42,10 @@ export default function RightSidebar() {
   if (pathname === '/clubs') {
     return (
       <div className="flex flex-col gap-5 select-none h-[calc(100vh-6rem)]">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden h-full flex flex-col">
+        <div className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-[20px] shadow-[var(--shadow-soft)] shadow-sm overflow-hidden h-full flex flex-col">
           <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between shrink-0">
-            <h2 className="font-bold text-base text-gray-900">Top 10 Clubs</h2>
-            <span className="text-[10px] font-semibold bg-[#F0EBFD] text-[#5D22D7] px-2 py-0.5 rounded-full">Ranked</span>
+            <h2 className="font-bold text-base text-[var(--text-main)]">Top 10 Clubs</h2>
+            <span className="text-[10px] font-semibold bg-[var(--accent-soft)] text-[var(--primary)] px-2 py-0.5 rounded-full">Ranked</span>
           </div>
           
           <div className="divide-y divide-gray-100 overflow-y-auto flex-1 custom-scrollbar">
@@ -70,10 +70,10 @@ export default function RightSidebar() {
     <div className="flex flex-col gap-5 select-none">
       
       {/* Upcoming Events */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+      <div className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-[20px] p-4 shadow-[var(--shadow-soft)]">
         <div className="flex items-center justify-between mb-3.5">
-          <h3 className="font-bold text-sm text-gray-900">Upcoming Events</h3>
-          <Link href="/events" className="text-xs font-semibold text-[#5D22D7] hover:underline">
+          <h3 className="font-bold text-sm text-[var(--text-main)]">Upcoming Events</h3>
+          <Link href="/events" className="text-xs font-semibold text-[var(--primary)] hover:underline">
             View All
           </Link>
         </div>
@@ -87,18 +87,18 @@ export default function RightSidebar() {
               <Link 
                 key={evt._id}
                 href={`/events?eventId=${evt._id}`}
-                className="flex items-center gap-3 group p-2 -mx-2 rounded-xl hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-3 group p-2 -mx-2 rounded-xl hover:bg-[var(--accent-soft)] transition-colors"
               >
                 {/* Date Box */}
-                <div className="w-12 h-13 rounded-xl bg-[#F0EBFD] border border-purple-100 flex flex-col items-center justify-center shrink-0 group-hover:bg-[#5D22D7] group-hover:border-[#5D22D7] transition-colors">
-                  <span className="text-[9px] font-extrabold text-[#5D22D7] group-hover:text-white uppercase tracking-wider transition-colors">{format(dateObj, 'MMM')}</span>
-                  <span className="text-base font-extrabold text-[#5D22D7] group-hover:text-white leading-none transition-colors">{format(dateObj, 'dd')}</span>
+                <div className="w-12 h-13 rounded-xl bg-[var(--accent-soft)] border border-white/50 flex flex-col items-center justify-center shrink-0 group-hover:bg-[var(--primary)] group-hover:border-[var(--primary)] transition-colors">
+                  <span className="text-[9px] font-extrabold text-[var(--primary)] group-hover:text-white uppercase tracking-wider transition-colors">{format(dateObj, 'MMM')}</span>
+                  <span className="text-base font-extrabold text-[var(--primary)] group-hover:text-white leading-none transition-colors">{format(dateObj, 'dd')}</span>
                 </div>
                 
                 {/* Event Details */}
                 <div className="min-w-0 flex-1">
-                  <h4 className="font-bold text-xs text-gray-900 truncate group-hover:text-[#5D22D7] transition-colors">{evt.name}</h4>
-                  <p className="text-[11px] text-gray-500 truncate mt-0.5">{evt.college?.name || 'TBA'}</p>
+                  <h4 className="font-bold text-xs text-[var(--text-main)] truncate group-hover:text-[var(--primary)] transition-colors">{evt.name}</h4>
+                  <p className="text-[11px] text-[var(--muted)] truncate mt-0.5">{evt.college?.name || 'TBA'}</p>
                   <p className="text-[10px] text-gray-400 mt-0.5">{format(dateObj, 'd MMM, h:mm a')}</p>
                 </div>
               </Link>
@@ -108,10 +108,10 @@ export default function RightSidebar() {
       </div>
 
       {/* Trending Clubs */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+      <div className="bg-white/70 backdrop-blur-xl border border-white/50 rounded-[20px] p-4 shadow-[var(--shadow-soft)]">
         <div className="flex items-center justify-between mb-3.5">
-          <h3 className="font-bold text-sm text-gray-900">Trending Clubs</h3>
-          <Link href="/clubs" className="text-xs font-semibold text-[#5D22D7] hover:underline">
+          <h3 className="font-bold text-sm text-[var(--text-main)]">Trending Clubs</h3>
+          <Link href="/clubs" className="text-xs font-semibold text-[var(--primary)] hover:underline">
             View All
           </Link>
         </div>
@@ -135,7 +135,7 @@ export default function RightSidebar() {
                     </div>
                     
                     <div className="min-w-0">
-                      <h4 className="font-bold text-xs text-gray-900 truncate group-hover:text-[#5D22D7] transition-colors">{club.name}</h4>
+                      <h4 className="font-bold text-xs text-[var(--text-main)] truncate group-hover:text-[var(--primary)] transition-colors">{club.name}</h4>
                       <p className="text-[11px] text-gray-500 truncate mt-0.5">{club.college?.name || club.university || 'University'}</p>
                       <p className="text-[10px] text-gray-400 mt-0.5">{membersCount} Members</p>
                     </div>
@@ -155,7 +155,7 @@ export default function RightSidebar() {
       </div>
 
       {/* Ambassador Promo Card */}
-      <div className="bg-gradient-to-br from-[#5D22D7] via-[#6320EE] to-[#7B2CBF] rounded-2xl p-5 text-white shadow-md relative overflow-hidden">
+      <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--accent-pink)] rounded-[20px] p-5 text-white shadow-[var(--shadow-soft)] relative overflow-hidden">
         <div className="relative z-10 max-w-[170px]">
           <h3 className="font-bold text-sm mb-1 leading-tight text-white">Become an Ambassador</h3>
           <p className="text-xs text-purple-100 leading-relaxed mb-4 font-normal">
@@ -163,7 +163,7 @@ export default function RightSidebar() {
           </p>
           <Link
             href="/mentors"
-            className="inline-block bg-white text-[#5D22D7] font-bold text-xs px-5 py-2 rounded-xl shadow-xs hover:bg-gray-50 transition-colors cursor-pointer"
+            className="inline-block bg-white text-[var(--primary)] font-bold text-xs px-5 py-2 rounded-full shadow-xs hover:bg-gray-50 transition-colors cursor-pointer"
           >
             Join Now
           </Link>
