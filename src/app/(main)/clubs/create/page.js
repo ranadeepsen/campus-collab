@@ -222,7 +222,7 @@ export default function CreateClubPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Instagram</label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Instagram (Optional)</label>
                     <input
                       type="url"
                       placeholder="https://instagram.com/..."
@@ -232,7 +232,7 @@ export default function CreateClubPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Facebook</label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Facebook (Optional)</label>
                     <input
                       type="url"
                       placeholder="https://facebook.com/..."
@@ -242,7 +242,7 @@ export default function CreateClubPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Twitter / X</label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Twitter / X (Optional)</label>
                     <input
                       type="url"
                       placeholder="https://x.com/..."
