@@ -62,13 +62,13 @@ export default function SettingsPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Display Name</p>
-                  <p className="font-semibold text-gray-900 text-lg">{profile?.profile?.name || user?.fullName || 'Not set'}</p>
+                  <p className="font-semibold text-gray-900 text-lg truncate">{profile?.profile?.name || user?.fullName || 'Not set'}</p>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Email Address</p>
-                  <p className="font-semibold text-gray-900">{profile?.email || user?.primaryEmailAddress?.emailAddress}</p>
+                  <p className="font-semibold text-gray-900 truncate">{profile?.email || user?.primaryEmailAddress?.emailAddress}</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Account Type</p>

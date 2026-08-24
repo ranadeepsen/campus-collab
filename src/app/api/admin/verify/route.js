@@ -1,9 +1,10 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/server/lib/db';
 import User from '@/server/models/User';
 import IdVerificationQueue from '@/server/models/IdVerificationQueue';
 import { verifyAdminSession } from '@/server/lib/adminAuth';
+import { sendEmail } from '@/server/lib/email';
 
 export async function GET(req) {
   try {
@@ -62,6 +63,16 @@ export async function POST(req) {
         }
       });
       
+      // Notify the user via email
+      await sendEmail({
+        to: userToVerify.email,
+        subject: 'Your Account is Verified - Campus Collab',
+        html: `<p>Hello!</p>
+               <p>Good news! Your account has been verified by the admin.</p>
+               <p>You can now proceed to explore Campus Collab, connect with others, and access all features.</p>
+               <p>Welcome aboard!</p>`
+      });
+
       return NextResponse.json({ success: true, status: 'approved' });
     } else if (action === 'reject') {
       queueItem.status = 'rejected';

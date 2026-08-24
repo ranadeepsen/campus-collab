@@ -1,8 +1,9 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import connectDB from '@/server/lib/db';
 import User from '@/server/models/User';
 import IdVerificationQueue from '@/server/models/IdVerificationQueue';
+import { sendEmail } from '@/server/lib/email';
 
 export async function POST(req) {
   try {
@@ -60,6 +61,17 @@ export async function POST(req) {
         profileCompleted: user.profileCompleted,
         isAmbassador: user.isAmbassador
       }
+    });
+
+    const adminEmail = process.env.ADMIN_EMAIL || 'ranadeepsen2004@gmail.com';
+    const collegeName = customCollegeRequest ? customCollegeRequest + ' (Custom Request)' : (collegeId || 'Not provided');
+    await sendEmail({
+      to: adminEmail,
+      subject: 'New Document Verification Request - Campus Collab',
+      html: `<p>Hello Admin,</p>
+             <p>A new user (<strong>${user.email}</strong>) has applied for document verification.</p>
+             <p>College Selected: <strong>${collegeName}</strong></p>
+             <p>Please log in to the admin panel to review the request.</p>`
     });
 
     return NextResponse.json({ success: true, status: 'pending_review' });
