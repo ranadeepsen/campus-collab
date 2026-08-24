@@ -34,7 +34,6 @@ export default function CreateClubPage() {
   if (!isLoaded) return <div className="p-10 text-center text-gray-500">Loading...</div>;
 
   const canCreate = user?.publicMetadata?.user_type === 'current' && user?.publicMetadata?.status === 'verified';
-  const collegeId = user?.publicMetadata?.college_id;
 
   if (!canCreate) {
     return (
@@ -58,8 +57,7 @@ export default function CreateClubPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          collegeId
+          ...formData
         })
       });
 

@@ -78,15 +78,15 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { name, description, category, collegeId, coverImageUrl, logoUrl, joinMode, proofText, proofFileUrl, website, instagram, facebook, twitter } = body;
+    const { name, description, category, coverImageUrl, logoUrl, joinMode, proofText, proofFileUrl, website, instagram, facebook, twitter } = body;
 
-    if (!name || !description || !category || !collegeId || !proofText) {
+    if (!name || !description || !category || !proofText) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Force college to be the creator's college, verify they match
-    if (user.profile.college.toString() !== collegeId) {
-      return NextResponse.json({ error: "You can only create a club for your verified college" }, { status: 403 });
+    const collegeId = user.profile?.college?.toString();
+    if (!collegeId) {
+      return NextResponse.json({ error: "No college associated with your profile" }, { status: 403 });
     }
 
     const newClub = await Club.create({
