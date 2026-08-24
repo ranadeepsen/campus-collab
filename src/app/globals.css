@@ -34,7 +34,7 @@
 }
 
 body {
-  background-image: url('/bg-clouds.jpg');
+  background-image: url('/bg-clouds.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
