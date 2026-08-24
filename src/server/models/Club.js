@@ -11,6 +11,12 @@ const ClubSchema = new mongoose.Schema({
   college: { type: mongoose.Schema.Types.ObjectId, ref: 'College', required: true },
   coverImageUrl: { type: String, default: null },
   logoUrl: { type: String, default: null },
+  website: { type: String, default: '' },
+  socialLinks: {
+    instagram: { type: String, default: '' },
+    facebook: { type: String, default: '' },
+    twitter: { type: String, default: '' }
+  },
   status: { 
     type: String, 
     required: true, 

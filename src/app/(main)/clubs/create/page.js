@@ -24,7 +24,11 @@ export default function CreateClubPage() {
     proofText: '',
     coverImageUrl: '',
     logoUrl: '',
-    proofFileUrl: ''
+    proofFileUrl: '',
+    website: '',
+    instagram: '',
+    facebook: '',
+    twitter: ''
   });
 
   if (!isLoaded) return <div className="p-10 text-center text-gray-500">Loading...</div>;
@@ -197,6 +201,56 @@ export default function CreateClubPage() {
                       </div>
                     )}
                   </CldUploadWidget>
+                </div>
+              </div>
+
+              <hr className="border-gray-100" />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-gray-900">Links & Social Media</h3>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-1.5">Website (Optional)</label>
+                  <input
+                    type="url"
+                    placeholder="https://your-club-website.com"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5D22D7]/20 focus:border-[#5D22D7] transition-all"
+                    value={formData.website}
+                    onChange={e => setFormData({...formData, website: e.target.value})}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Instagram</label>
+                    <input
+                      type="url"
+                      placeholder="https://instagram.com/..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5D22D7]/20 focus:border-[#5D22D7] transition-all"
+                      value={formData.instagram}
+                      onChange={e => setFormData({...formData, instagram: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Facebook</label>
+                    <input
+                      type="url"
+                      placeholder="https://facebook.com/..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5D22D7]/20 focus:border-[#5D22D7] transition-all"
+                      value={formData.facebook}
+                      onChange={e => setFormData({...formData, facebook: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-900 mb-1.5">Twitter / X</label>
+                    <input
+                      type="url"
+                      placeholder="https://x.com/..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5D22D7]/20 focus:border-[#5D22D7] transition-all"
+                      value={formData.twitter}
+                      onChange={e => setFormData({...formData, twitter: e.target.value})}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

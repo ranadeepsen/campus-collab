@@ -78,7 +78,7 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const { name, description, category, collegeId, coverImageUrl, logoUrl, joinMode, proofText, proofFileUrl } = body;
+    const { name, description, category, collegeId, coverImageUrl, logoUrl, joinMode, proofText, proofFileUrl, website, instagram, facebook, twitter } = body;
 
     if (!name || !description || !category || !collegeId || !proofText) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -96,6 +96,12 @@ export async function POST(req) {
       college: collegeId,
       coverImageUrl: coverImageUrl || null,
       logoUrl: logoUrl || null,
+      website: website || '',
+      socialLinks: {
+        instagram: instagram || '',
+        facebook: facebook || '',
+        twitter: twitter || ''
+      },
       status: "pending_review",
       joinMode: joinMode || "request",
       proofText,

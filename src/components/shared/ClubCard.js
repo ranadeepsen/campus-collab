@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, Lock, X, Info } from 'lucide-react';
+import { Users, Lock, X, Info, Globe, Link as LinkIcon } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 
 export default function ClubCard({ club, index, isSidebar }) {
@@ -99,6 +99,36 @@ export default function ClubCard({ club, index, isSidebar }) {
               {club.description || 'No description provided.'}
             </p>
           </div>
+
+          {(club.website || club.socialLinks?.instagram || club.socialLinks?.facebook || club.socialLinks?.twitter) && (
+            <div className="mb-6">
+              <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2 uppercase tracking-wider">
+                <Globe className="w-4 h-4 text-[#5D22D7]" /> Links & Social
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {club.website && (
+                  <a href={club.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm font-medium text-gray-700 transition-colors border border-gray-200">
+                    <Globe className="w-4 h-4" /> Website
+                  </a>
+                )}
+                {club.socialLinks?.instagram && (
+                  <a href={club.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-pink-50 hover:bg-pink-100 rounded-lg text-sm font-medium text-pink-700 transition-colors border border-pink-200">
+                    <LinkIcon className="w-4 h-4" /> Instagram
+                  </a>
+                )}
+                {club.socialLinks?.facebook && (
+                  <a href={club.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg text-sm font-medium text-blue-700 transition-colors border border-blue-200">
+                    <LinkIcon className="w-4 h-4" /> Facebook
+                  </a>
+                )}
+                {club.socialLinks?.twitter && (
+                  <a href={club.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-1.5 bg-sky-50 hover:bg-sky-100 rounded-lg text-sm font-medium text-sky-700 transition-colors border border-sky-200">
+                    <LinkIcon className="w-4 h-4" /> Twitter
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="pt-4 border-t border-gray-100">
             <button 
